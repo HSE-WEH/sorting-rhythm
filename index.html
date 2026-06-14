@@ -421,31 +421,35 @@
     ];
 
     function getRoundConfig(index) {
-        if (index === 0) return { label: '1', count: 3, time: 16.0, blind: false };
-        if (index === 1) return { label: '1', count: 3, time: 16.0, blind: false };
-        if (index === 2) return { label: '1', count: 4, time: 16.0, blind: false };
-        if (index === 3) return { label: '1 (Blind)', count: 4, time: 12.0, blind: true };
+        // คืนค่า: { label, count, time (เวลาใน Normal, หรือเวลาจำใน Blind), ansTime (เวลาตอบของรอบนั้น), blind }
+        if (index === 0) return { label: '1', count: 3, time: 16.0, ansTime: 16.0, blind: false };
+        if (index === 1) return { label: '1', count: 3, time: 16.0, ansTime: 16.0, blind: false };
+        if (index === 2) return { label: '1', count: 4, time: 16.0, ansTime: 16.0, blind: false };
+        if (index === 3) return { label: '1 (Blind)', count: 4, time: 12.0, ansTime: 9.0, blind: true };
         
-        if (index === 4) return { label: '2', count: 4, time: 14.0, blind: false };
-        if (index === 5) return { label: '2', count: 4, time: 14.0, blind: false };
-        if (index === 6) return { label: '2', count: 4, time: 14.0, blind: false };
-        if (index === 7) return { label: '2 (Blind)', count: 4, time: 11.0, blind: true };
+        if (index === 4) return { label: '2', count: 4, time: 14.0, ansTime: 14.0, blind: false };
+        if (index === 5) return { label: '2', count: 4, time: 14.0, ansTime: 14.0, blind: false };
+        if (index === 6) return { label: '2', count: 4, time: 14.0, ansTime: 14.0, blind: false };
+        if (index === 7) return { label: '2 (Blind)', count: 4, time: 11.0, ansTime: 9.0, blind: true };
 
-        if (index === 8) return { label: '3', count: 4, time: 12.0, blind: false };
-        if (index === 9) return { label: '3', count: 5, time: 12.0, blind: false };
-        if (index === 10) return { label: '3', count: 5, time: 12.0, blind: false };
-        if (index === 11) return { label: '3 (Blind)', count: 5, time: 10.0, blind: true };
+        if (index === 8) return { label: '3', count: 4, time: 12.0, ansTime: 12.0, blind: false };
+        if (index === 9) return { label: '3', count: 5, time: 12.0, ansTime: 12.0, blind: false };
+        if (index === 10) return { label: '3', count: 5, time: 12.0, ansTime: 12.0, blind: false };
+        if (index === 11) return { label: '3 (Blind)', count: 5, time: 10.0, ansTime: 9.0, blind: true };
 
-        if (index === 12) return { label: 'Final', count: 5, time: 10.0, blind: false };
-        if (index === 13) return { label: 'Final', count: 5, time: 10.0, blind: false };
-        if (index === 14) return { label: 'Final', count: 5, time: 10.0, blind: false };
-        if (index === 15) return { label: 'Final (Blind)', count: 5, time: 9.0, blind: true };
+        // Final Stage Looping
+        let loopIndex = Math.floor((index - 12) / 4);
+        let stageInLoop = (index - 12) % 4;
+        
+        let count = loopIndex === 0 ? 5 : 6;
+        let normalTime = Math.max(7, 10 - loopIndex);
+        let blindMemTime = Math.max(7, 9 - loopIndex);
+        let blindAnsTime = Math.max(7, 9 - loopIndex);
 
-        let loopIndex = (index - 16) % 4;
-        if (loopIndex < 3) {
-            return { label: 'Final', count: 6, time: 10.0, blind: false };
+        if (stageInLoop < 3) {
+            return { label: 'Final', count: count, time: normalTime, ansTime: normalTime, blind: false };
         } else {
-            return { label: 'Final (Blind)', count: 6, time: 9.0, blind: true };
+            return { label: 'Final (Blind)', count: count, time: blindMemTime, ansTime: blindAnsTime, blind: true };
         }
     }
 
@@ -808,7 +812,7 @@
         
         let config = getRoundConfig(gameState.roundIndex);
         
-        gameState.targetTime = config.time;
+        gameState.targetTime = config.ansTime; // ดึงเวลาตอบมาจากคอนฟิกที่แยกไว้ (Normal = time, Blind = 9, 8, 7...)
         gameState.isBlind = config.blind;
         document.getElementById('ui-stage').innerText = config.label;
         
@@ -821,15 +825,18 @@
                 let prev1 = i > 0 ? gameState.sequence[i - 1] : null;
                 let prev2 = i > 1 ? gameState.sequence[i - 2] : null;
 
+                // ห้ามเกิดขยะตัวเดียวกัน 100%
                 if (prev1 && candidate.id === prev1.id) {
                     continue;
                 }
 
+                // ลดโอกาสสีเดียวกันติดกัน 3 อันลง 70% (เหลือ 30%)
                 if (prev1 && prev2 && candidate.key === prev1.key && candidate.key === prev2.key) {
-                    if (Math.random() < 0.70) continue; 
+                    if (Math.random() > 0.30) continue; 
                 }
+                // ลดโอกาสสีเดียวกันติดกัน 2 อันลง 60% (ให้เกิดได้ 40%)
                 else if (prev1 && candidate.key === prev1.key) {
-                    if (Math.random() < 0.50) continue;
+                    if (Math.random() > 0.40) continue;
                 }
 
                 valid = true;
@@ -853,7 +860,7 @@
             inputTimerInterval = setInterval(() => {
                 if(gameState.phase !== 'memorize') return clearInterval(inputTimerInterval);
                 let elapsed = (Date.now() - gameState.inputStartTime) / 1000;
-                let percent = Math.max(0, 100 - (elapsed / config.time * 100));
+                let percent = Math.max(0, 100 - (elapsed / config.time * 100)); // เวลาหลอดอิงเวลาจำ
                 document.getElementById('timer-progress').style.width = percent + '%';
                 
                 if(elapsed >= config.time) {
@@ -1050,13 +1057,7 @@
         });
 
         document.getElementById('score-selection').style.display = 'block';
-
-        if(gameState.scoreHistory.length >= 2) {
-            document.getElementById('btn-back-menu').style.display = 'none'; 
-        } else {
-            document.getElementById('btn-back-menu').style.display = 'block';
-        }
-        
+        document.getElementById('btn-back-menu').style.display = 'block';
         switchScreen('result-screen');
     }
 
