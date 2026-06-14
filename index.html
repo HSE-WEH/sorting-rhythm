@@ -348,7 +348,7 @@
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
     
-    // สร้าง Supabase Client ที่ถูกต้อง (ใช้ window.supabase เพื่อป้องกันปัญหา TDZ)
+    // สร้าง Supabase Client ที่ถูกต้อง
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const trashes = [
@@ -435,6 +435,14 @@
         const p = document.getElementById('login-pass').value;
         
         if (!u || !p) return alert('กรุณากรอก Username และ Password');
+
+        // --- เพิ่มระบบ Bypass แอดมินจำลองกลับมา เพื่อให้รันทดสอบได้ ---
+        if (u === 'admin' && p === 'adminhse') {
+            currentUser = { display_name: 'Admin HSE', username: 'admin', energy: 999, role: 'admin', hasSavedToday: false };
+            updateMenuUI();
+            switchScreen('menu-screen');
+            return;
+        }
 
         try {
             const { data, error } = await supabaseClient.from('users').select('*').eq('username', u).eq('password', p).single();
