@@ -246,8 +246,8 @@
         
         <div class="status-update-container">
             <span style="font-size: 20px;">💬</span>
-            <input type="text" id="status-input" placeholder="อัพเดทสถานะวันนี้..." style="width: 100%; margin: 0; padding: 6px 10px; font-size: 13px;">
-            <button onclick="updateStatus()" style="width: auto; margin: 0; padding: 6px 12px; font-size: 12px; white-space: nowrap;">เซฟ (<span id="status-left">2</span>)</button>
+            <input type="text" id="status-input" placeholder="อัพเดทสถานะวันนี้...โปรดใช้คำสุภาพ" style="width: 100%; margin: 0; padding: 6px 10px; font-size: 13px;">
+            <button onclick="updateStatus()" style="width: auto; margin: 0; padding: 6px 12px; font-size: 12px; white-space: nowrap;">save! (<span id="status-left">2</span>)</button>
             <button onclick="clearStatus()" style="width: auto; margin: 0; padding: 6px; font-size: 12px; background: #EF4444;" title="ลบสถานะ">🗑️</button>
         </div>
 
@@ -416,28 +416,28 @@
         if (index === 0) return { label: '1', count: 3, time: 16.0, blind: false };
         if (index === 1) return { label: '1', count: 3, time: 16.0, blind: false };
         if (index === 2) return { label: '1', count: 4, time: 16.0, blind: false };
-        if (index === 3) return { label: '1 (Blind)', count: 4, time: 12.0, blind: true };
+        if (index === 3) return { label: '1 (Blind)', count: 4, time: 10.0, blind: true };
         
         if (index === 4) return { label: '2', count: 4, time: 14.0, blind: false };
         if (index === 5) return { label: '2', count: 4, time: 14.0, blind: false };
         if (index === 6) return { label: '2', count: 4, time: 14.0, blind: false };
-        if (index === 7) return { label: '2 (Blind)', count: 4, time: 11.0, blind: true };
+        if (index === 7) return { label: '2 (Blind)', count: 4, time: 9.0, blind: true };
 
         if (index === 8) return { label: '3', count: 4, time: 12.0, blind: false };
         if (index === 9) return { label: '3', count: 5, time: 12.0, blind: false };
         if (index === 10) return { label: '3', count: 5, time: 12.0, blind: false };
-        if (index === 11) return { label: '3 (Blind)', count: 5, time: 10.0, blind: true };
+        if (index === 11) return { label: '3 (Blind)', count: 5, time: 8.0, blind: true };
 
         if (index === 12) return { label: 'Final', count: 5, time: 10.0, blind: false };
         if (index === 13) return { label: 'Final', count: 5, time: 10.0, blind: false };
         if (index === 14) return { label: 'Final', count: 5, time: 10.0, blind: false };
-        if (index === 15) return { label: 'Final (Blind)', count: 5, time: 9.0, blind: true };
+        if (index === 15) return { label: 'Final (Blind)', count: 5, time: 8.0, blind: true };
 
         let loopIndex = (index - 16) % 4;
         if (loopIndex < 3) {
             return { label: 'Final', count: 6, time: 10.0, blind: false };
         } else {
-            return { label: 'Final (Blind)', count: 6, time: 9.0, blind: true };
+            return { label: 'Final (Blind)', count: 6, time: 8.0, blind: true };
         }
     }
 
