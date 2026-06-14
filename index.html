@@ -164,6 +164,16 @@
         .status-cell::-webkit-scrollbar-track { background: transparent; }
         .status-cell::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
         .status-cell::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* สไตล์สำหรับปุ่มแอดมินเพิ่มเติม */
+        .btn-admin-action {
+            width: auto; padding: 4px 8px; font-size: 12px; margin: 2px; border-radius: 6px;
+        }
+        .btn-admin-clear { background-color: #EF4444; color: white; border: none; cursor: pointer; }
+        .btn-admin-clear:hover { background-color: #DC2626; }
+        .btn-admin-add { background-color: #3B82F6; color: white; border: none; cursor: pointer; }
+        .btn-admin-add:hover { background-color: #2563EB; }
+
     </style>
 </head>
 <body>
@@ -360,13 +370,12 @@
                     <tr>
                         <th style="width: 25%;">ชื่อผู้เล่น</th>
                         <th style="width: 15%; text-align: center;">พลังงาน</th>
-                        <th style="width: 25%; text-align: center;">เติมพลังงาน</th>
                         <th style="width: 20%; text-align: center;">สถานะวันนี้</th>
-                        <th style="width: 15%; text-align: center;">จัดการ</th>
+                        <th style="width: 40%; text-align: center;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="admin-user-list">
-                    <tr><td colspan="5" style="text-align: center;">กำลังโหลดข้อมูลผู้เล่น...</td></tr>
+                    <tr><td colspan="4" style="text-align: center;">กำลังโหลดข้อมูลผู้เล่น...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -390,7 +399,6 @@
 </div>
 
 <script>
-    // URL และ Key สำหรับเชื่อมต่อ Supabase
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
     
@@ -416,28 +424,28 @@
         if (index === 0) return { label: '1', count: 3, time: 16.0, blind: false };
         if (index === 1) return { label: '1', count: 3, time: 16.0, blind: false };
         if (index === 2) return { label: '1', count: 4, time: 16.0, blind: false };
-        if (index === 3) return { label: '1 (Blind)', count: 4, time: 10.0, blind: true };
+        if (index === 3) return { label: '1 (Blind)', count: 4, time: 12.0, blind: true };
         
         if (index === 4) return { label: '2', count: 4, time: 14.0, blind: false };
         if (index === 5) return { label: '2', count: 4, time: 14.0, blind: false };
         if (index === 6) return { label: '2', count: 4, time: 14.0, blind: false };
-        if (index === 7) return { label: '2 (Blind)', count: 4, time: 9.0, blind: true };
+        if (index === 7) return { label: '2 (Blind)', count: 4, time: 11.0, blind: true };
 
         if (index === 8) return { label: '3', count: 4, time: 12.0, blind: false };
         if (index === 9) return { label: '3', count: 5, time: 12.0, blind: false };
         if (index === 10) return { label: '3', count: 5, time: 12.0, blind: false };
-        if (index === 11) return { label: '3 (Blind)', count: 5, time: 8.0, blind: true };
+        if (index === 11) return { label: '3 (Blind)', count: 5, time: 10.0, blind: true };
 
         if (index === 12) return { label: 'Final', count: 5, time: 10.0, blind: false };
         if (index === 13) return { label: 'Final', count: 5, time: 10.0, blind: false };
         if (index === 14) return { label: 'Final', count: 5, time: 10.0, blind: false };
-        if (index === 15) return { label: 'Final (Blind)', count: 5, time: 8.0, blind: true };
+        if (index === 15) return { label: 'Final (Blind)', count: 5, time: 9.0, blind: true };
 
         let loopIndex = (index - 16) % 4;
         if (loopIndex < 3) {
             return { label: 'Final', count: 6, time: 10.0, blind: false };
         } else {
-            return { label: 'Final (Blind)', count: 6, time: 8.0, blind: true };
+            return { label: 'Final (Blind)', count: 6, time: 9.0, blind: true };
         }
     }
 
@@ -468,7 +476,7 @@
             timerEl.innerText = `⏳ รีเซ็ตใน ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
         
-        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน
+        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน (เวลาไทย)
         if(h === 0 && m === 0 && s === 0 && currentUser) {
             currentUser.energy = 2;
             currentUser.hasSavedToday = false;
@@ -563,7 +571,6 @@
         }
     }
 
-    // --- ส่วนแก้ไขชื่อเล่นและอัปเดตสถานะ (ฟีเจอร์ใหม่) ---
     async function editDisplayName() {
         let newName = prompt("ตั้งชื่อที่แสดงในกระดานคะแนนใหม่:", currentUser.display_name);
         if(newName && newName.trim() !== "") {
@@ -619,11 +626,9 @@
         document.getElementById('player-energy').innerText = currentUser.role === 'admin' ? '∞' : currentUser.energy;
         document.getElementById('admin-btn').style.display = currentUser.role === 'admin' ? 'block' : 'none';
         
-        // อัปเดตช่องสถานะ
         document.getElementById('status-input').value = currentUser.daily_status || '';
         document.getElementById('status-left').innerText = currentUser.status_updates_left;
     }
-    // ------------------------------------------
 
     async function showLeaderboard() {
         switchScreen('scoreboard-screen');
@@ -631,7 +636,6 @@
         tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
 
         try {
-            // ดึงคะแนนและสถานะประจำวันของแต่ละคนมาแสดง
             const { data, error } = await supabaseClient.from('scores').select('score, username, users(display_name, daily_status)');
 
             if (error || !data || data.length === 0) {
@@ -677,13 +681,13 @@
 
     async function loadAdminData() {
         const tbody = document.getElementById('admin-user-list');
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px;">กำลังโหลดข้อมูลผู้เล่น...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 15px;">กำลังโหลดข้อมูลผู้เล่น...</td></tr>';
 
         try {
             const { data, error } = await supabaseClient.from('users').select('*').neq('role', 'admin').order('display_name', { ascending: true });
 
             if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px;">ยังไม่มีผู้เล่นในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 15px;">ยังไม่มีผู้เล่นในระบบ</td></tr>';
                 return;
             }
 
@@ -695,21 +699,23 @@
                 <tr>
                     <td><strong>${user.display_name}</strong><br><span style="font-size: 11px; color: #6B7280;">(${user.username})</span></td>
                     <td style="text-align: center; font-weight: bold;">${user.energy}</td>
-                    <td style="text-align: center;">
-                        <input type="number" id="add-energy-${user.username}" value="1" min="1" style="width: 50px; padding: 4px; text-align: center; font-size: 13px;">
-                        <button onclick="addEnergyToUser('${user.username}', ${user.energy})" style="width: auto; padding: 4px 8px; font-size: 12px; margin: 0; margin-left: 4px;">เติม</button>
-                    </td>
                     <td style="text-align: center; font-weight: 600; color: ${isRecorded ? '#10B981' : '#9CA3AF'};">
                         ${isRecorded ? '✅ Recorded' : '⏳ รอเล่น'}
                     </td>
                     <td style="text-align: center;">
-                        <button onclick="allowReRecord('${user.username}', '${user.display_name}')" class="btn-rerecord ${isRecorded ? 'active' : ''}" ${!isRecorded ? 'disabled' : ''}>Re-record</button>
+                        <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
+                            <input type="number" id="add-energy-${user.username}" value="1" min="1" style="width: 40px; padding: 4px; text-align: center; font-size: 12px; height: 24px;">
+                            <button onclick="addEnergyToUser('${user.username}', ${user.energy})" class="btn-admin-action btn-admin-add">เติม ⚡</button>
+                            <button onclick="allowReRecord('${user.username}', '${user.display_name}')" class="btn-admin-action btn-rerecord ${isRecorded ? 'active' : ''}" ${!isRecorded ? 'disabled' : ''}>Re-record</button>
+                            <button onclick="adminAddStatusQuota('${user.username}', '${user.display_name}', ${user.status_updates_left})" class="btn-admin-action btn-admin-add">+โควต้า💬</button>
+                            <button onclick="adminClearStatus('${user.username}', '${user.display_name}')" class="btn-admin-action btn-admin-clear">ลบ💬</button>
+                        </div>
                     </td>
                 </tr>
                 `;
             }).join('');
         } catch (err) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px;">ดึงข้อมูลล้มเหลว</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 15px;">ดึงข้อมูลล้มเหลว</td></tr>';
         }
     }
 
@@ -730,6 +736,21 @@
         alert('ปลดล็อกให้บันทึกคะแนนรอบใหม่ได้สำเร็จ!');
         loadAdminData();
     }
+    
+    async function adminAddStatusQuota(username, display_name, currentQuota) {
+        if (!confirm(`เพิ่มโควต้าอัปเดตสถานะให้ ${display_name} อีก 1 ครั้งใช่หรือไม่?`)) return;
+        const newQuota = currentQuota + 1;
+        await supabaseClient.from('users').update({ status_updates_left: newQuota }).eq('username', username);
+        alert('เพิ่มโควต้าสำเร็จ!');
+        loadAdminData();
+    }
+
+    async function adminClearStatus(username, display_name) {
+        if (!confirm(`ต้องการลบสถานะปัจจุบันของ ${display_name} ใช่หรือไม่?`)) return;
+        await supabaseClient.from('users').update({ daily_status: '' }).eq('username', username);
+        alert('ลบสถานะสำเร็จ!');
+        loadAdminData();
+    }
 
     async function clearLeaderboard() {
         if (!confirm('⚠️ คำเตือน: คุณต้องการล้างข้อมูลกระดานคะแนนสะสมทั้งหมดใช่หรือไม่? การกระทำนี้ไม่สามารถกู้คืนได้!')) return;
@@ -738,7 +759,6 @@
         alert('ล้างข้อมูลกระดานคะแนนเรียบร้อยแล้ว!');
     }
     // --- สิ้นสุดส่วนหน้าควบคุมแอดมิน ---
-
 
     function showStartPopup() {
         if (currentUser.role !== 'admin' && currentUser.energy <= 0) return alert('พลังงานของคุณหมดแล้วสําหรับวันนี้! กรุณารอเวลาพลังงานรีเซ็ตตอนเที่ยงคืนครับ');
