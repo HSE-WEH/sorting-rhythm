@@ -135,38 +135,32 @@
         .blind-text { animation: pulse 1s infinite alternate; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
-        /* แถบ Table หน้าแอดมิน */
         .admin-table-container { width: 100%; max-width: 800px; overflow-y: auto; max-height: 380px; margin-bottom: 20px; border-radius: 12px; border: 1px solid #E2E8F0; }
         .admin-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
         .admin-table th, .admin-table td { border-bottom: 1px solid #E2E8F0; padding: 10px 15px; }
         .admin-table th { background-color: #F8FAFC; color: #4B5563; font-weight: 600; position: sticky; top: 0; z-index: 1; }
         .admin-table tbody tr:hover { background-color: #F0FDF4; }
         
-        /* ปุ่ม Re-record แก้ขนาดให้เล็กสมส่วน */
         .btn-rerecord { width: auto; padding: 4px 10px; font-size: 12px; margin: 0; border-radius: 6px; background: #9CA3AF; color: white; border: none; }
         .btn-rerecord.active { background: #F59E0B; cursor: pointer; }
         .btn-rerecord.active:hover { background: #D97706; }
 
-        /* ช่องสถานะวันนี้ในหน้าเมนู */
         .status-update-container {
             display: flex; gap: 5px; align-items: center; margin-top: 15px; margin-bottom: 10px;
             background: #F8FAFC; padding: 10px 15px; border-radius: 12px; border: 1px solid #E2E8F0; width: 100%; max-width: 450px;
         }
 
-        /* ตารางช่อง Status ให้มี Scrollbar เล็ก ไม่ยืดตาราง */
         .status-cell {
-            max-width: 160px; /* ฟิคความกว้าง */
+            max-width: 160px;
             overflow-x: auto;
             white-space: nowrap;
             color: #4B5563;
         }
-        /* แต่ง Scrollbar เล็กๆ */
         .status-cell::-webkit-scrollbar { height: 4px; }
         .status-cell::-webkit-scrollbar-track { background: transparent; }
         .status-cell::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
         .status-cell::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-        /* สไตล์สำหรับปุ่มแอดมินเพิ่มเติม */
         .btn-admin-action {
             width: auto; padding: 4px 8px; font-size: 12px; margin: 2px; border-radius: 6px;
         }
@@ -191,7 +185,6 @@
         </div>
     </div>
 
-    <!-- หน้า Login -->
     <div id="login-screen" class="screen active">
         <h1 class="logo-title">🎵 Sorting Rhythm</h1>
         <h2 class="logo-subtitle">ศึกคัดขยะห้าสี จังหวะขยี้ใจ</h2>
@@ -210,7 +203,6 @@
         </div>
     </div>
 
-    <!-- หน้า สมัครสมาชิก -->
     <div id="register-screen" class="screen">
         <h1 class="logo-title" style="font-size: 28px;">📝 สมัครสมาชิก</h1>
         <div class="form-group" style="margin-top: 15px;">
@@ -243,7 +235,6 @@
         </div>
     </div>
 
-    <!-- หน้า เมนูหลัก -->
     <div id="menu-screen" class="screen">
         <div class="top-bar">
             <span>
@@ -266,10 +257,7 @@
 
         <div class="menu-buttons">
             <button onclick="showStartPopup()" style="background: #10B981; font-size: 18px; padding: 14px 40px; width: 250px; border-radius: 16px;">▶ เริ่มต้นเล่นเกม</button>
-            
-            <!-- ปุ่มดึงคะแนนเก่าขึ้นมาเซฟ (จะแสดงก็ต่อเมื่อมีคะแนนค้างและยังไม่ได้เซฟวันนี้) -->
             <button id="btn-resume-save" onclick="showResultScreen()" style="display:none; background: #F59E0B; font-size: 16px; padding: 10px 40px; width: 250px; border-radius: 12px; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);">💾 บันทึกคะแนนที่ค้างอยู่</button>
-            
             <button onclick="switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
             <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
             <button id="admin-btn" style="display:none; background: #8B5CF6; width: 250px;" onclick="showAdminPanel()">⚙️ แผงควบคุมแอดมิน</button>
@@ -277,7 +265,6 @@
         </div>
     </div>
 
-    <!-- หน้า วิธีการเล่น -->
     <div id="howto-screen" class="screen">
         <h1>📖 วิธีการเล่นเบื้องต้น</h1>
         <div class="howto-desc">
@@ -322,7 +309,6 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')" style="width: 250px; margin-top: 10px;">ย้อนกลับ</button>
     </div>
 
-    <!-- หน้าเล่นเกม -->
     <div id="game-screen" class="screen">
         <div class="top-bar">
             <span>Stage: <span id="ui-stage">1</span></span>
@@ -351,7 +337,6 @@
         </div>
     </div>
 
-    <!-- หน้า กระดานคะแนน -->
     <div id="scoreboard-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>🏆 กระดานคะแนนสะสม</h1>
         <p style="margin-top: 0; color: #4B5563; font-size: 14px; margin-bottom: 15px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก)</p>
@@ -375,7 +360,6 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')" style="margin-top: 0;">ย้อนกลับ</button>
     </div>
 
-    <!-- หน้า แอดมิน -->
     <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>⚙️ แผงควบคุมระบบ (Admin)</h1>
         
@@ -401,19 +385,13 @@
         </div>
     </div>
 
-    <!-- หน้าจบเกมและเลือกเซฟคะแนน -->
     <div id="result-screen" class="screen">
         <h1 style="color: #EF4444; font-size: 34px;">🎮 จบเกมการเล่น!</h1>
         <h2 style="font-size: 26px; margin-bottom: 5px;">คะแนนรอบล่าสุด: <span id="final-score" style="color: var(--primary);">0</span></h2>
         
-        <!-- กล่องเลือกเซฟคะแนนแบบ Dynamic -->
-        <div id="score-selection" style="background: #F8FAFC; padding: 20px; border-radius: 16px; margin-top: 15px; margin-bottom: 15px; border: 2px dashed #CBD5E1; text-align: center; width: 100%; max-width: 400px;">
+        <div id="score-selection" style="display: none; background: #F8FAFC; padding: 20px; border-radius: 16px; margin-top: 15px; margin-bottom: 15px; border: 2px dashed #CBD5E1; text-align: center; width: 100%; max-width: 400px;">
             <p style="font-weight: 600; color: #4B5563; margin-top: 0;">คุณมีคะแนนที่ค้างอยู่ เลือกบันทึกคะแนนรอบที่ต้องการ:</p>
-            
-            <div id="dynamic-score-buttons" style="display: flex; flex-direction: column; gap: 8px; align-items: center; max-height: 250px; overflow-y: auto; padding-right: 5px;">
-                <!-- ปุ่มจะถูกสร้างที่นี่อัตโนมัติ -->
-            </div>
-            
+            <div id="dynamic-score-buttons" style="display: flex; flex-direction: column; gap: 8px; align-items: center; max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
         </div>
         
         <button onclick="switchScreen('menu-screen')" id="btn-back-menu" class="btn-back" style="width: auto;">กลับเมนูหลักโดยไม่บันทึก</button>
@@ -498,7 +476,6 @@
             timerEl.innerText = `⏳ รีเซ็ตใน ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
         
-        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน (เวลาไทย)
         if(h === 0 && m === 0 && s === 0 && currentUser) {
             currentUser.energy = 2;
             currentUser.hasSavedToday = false;
@@ -670,7 +647,6 @@
         document.getElementById('status-input').value = currentUser.daily_status || '';
         document.getElementById('status-left').innerText = currentUser.status_updates_left;
 
-        // เช็คคะแนนค้าง ถ้ามีและยังไม่เคยเซฟวันนี้ ให้โชว์ปุ่ม "บันทึกคะแนนที่ค้างอยู่"
         let resumeBtn = document.getElementById('btn-resume-save');
         if (gameState.scoreHistory && gameState.scoreHistory.length > 0 && !currentUser.hasSavedToday) {
             resumeBtn.style.display = 'block';
@@ -837,7 +813,29 @@
         document.getElementById('ui-stage').innerText = config.label;
         
         gameState.sequence = [];
-        for(let i=0; i<config.count; i++) gameState.sequence.push(trashes[Math.floor(Math.random() * trashes.length)]);
+        for (let i = 0; i < config.count; i++) {
+            let valid = false;
+            let candidate;
+            while (!valid) {
+                candidate = trashes[Math.floor(Math.random() * trashes.length)];
+                let prev1 = i > 0 ? gameState.sequence[i - 1] : null;
+                let prev2 = i > 1 ? gameState.sequence[i - 2] : null;
+
+                if (prev1 && candidate.id === prev1.id) {
+                    continue;
+                }
+
+                if (prev1 && prev2 && candidate.key === prev1.key && candidate.key === prev2.key) {
+                    if (Math.random() < 0.70) continue; 
+                }
+                else if (prev1 && candidate.key === prev1.key) {
+                    if (Math.random() < 0.50) continue;
+                }
+
+                valid = true;
+            }
+            gameState.sequence.push(candidate);
+        }
         
         document.getElementById('timer-bar').style.display = 'none';
         clearInterval(inputTimerInterval);
