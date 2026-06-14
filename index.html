@@ -85,6 +85,7 @@
         button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(5, 150, 105, 0.15); filter: brightness(1.05); }
         button.btn-back { background: #94A3B8; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 15px;}
         button.btn-back:hover { background: #64748B; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
         
         .menu-buttons { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: 15px; }
         
@@ -148,6 +149,13 @@
 
         .blind-text { animation: pulse 1s infinite alternate; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+        /* แถบ Table หน้าแอดมิน */
+        .admin-table-container { width: 100%; max-width: 800px; overflow-y: auto; max-height: 380px; margin-bottom: 20px; border-radius: 12px; border: 1px solid #E2E8F0; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+        .admin-table th, .admin-table td { border-bottom: 1px solid #E2E8F0; padding: 10px 15px; }
+        .admin-table th { background-color: #F8FAFC; color: #4B5563; font-weight: 600; position: sticky; top: 0; z-index: 1; }
+        .admin-table tbody tr:hover { background-color: #F0FDF4; }
     </style>
 </head>
 <body>
@@ -165,6 +173,7 @@
         </div>
     </div>
 
+    <!-- หน้า Login -->
     <div id="login-screen" class="screen active">
         <h1 class="logo-title">🎵 Sorting Rhythm</h1>
         <h2 class="logo-subtitle">ศึกคัดขยะห้าสี จังหวะขยี้ใจ</h2>
@@ -183,6 +192,7 @@
         </div>
     </div>
 
+    <!-- หน้า สมัครสมาชิก -->
     <div id="register-screen" class="screen">
         <h1 class="logo-title" style="font-size: 28px;">📝 สมัครสมาชิก</h1>
         <div class="form-group" style="margin-top: 15px;">
@@ -215,6 +225,7 @@
         </div>
     </div>
 
+    <!-- หน้า เมนูหลัก -->
     <div id="menu-screen" class="screen">
         <div class="top-bar">
             <span id="player-name">Player</span>
@@ -228,11 +239,12 @@
             <button onclick="showStartPopup()" style="background: #10B981; font-size: 18px; padding: 14px 40px; width: 250px; border-radius: 16px;">▶ เริ่มต้นเล่นเกม</button>
             <button onclick="switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
             <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
-            <button id="admin-btn" style="display:none; background: #8B5CF6; width: 250px;" onclick="switchScreen('admin-screen')">⚙️ แผงควบคุมแอดมิน</button>
+            <button id="admin-btn" style="display:none; background: #8B5CF6; width: 250px;" onclick="showAdminPanel()">⚙️ แผงควบคุมแอดมิน</button>
             <button onclick="logout()" class="btn-back" style="width: 250px; margin-top: 15px;">ออกจากระบบ</button>
         </div>
     </div>
 
+    <!-- หน้า วิธีการเล่น -->
     <div id="howto-screen" class="screen">
         <h1>📖 วิธีการเล่นเบื้องต้น</h1>
         <div class="howto-desc">
@@ -277,6 +289,7 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')" style="width: 250px; margin-top: 10px;">ย้อนกลับ</button>
     </div>
 
+    <!-- หน้าเล่นเกม -->
     <div id="game-screen" class="screen">
         <div class="top-bar">
             <span>Stage: <span id="ui-stage">1</span></span>
@@ -305,14 +318,16 @@
         </div>
     </div>
 
+    <!-- หน้า กระดานคะแนน -->
     <div id="scoreboard-screen" class="screen">
         <h1>🏆 กระดานคะแนนสะสม</h1>
+        <p style="margin-top: 0; color: #4B5563; font-size: 14px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก)</p>
         <table class="howto-table" style="max-width: 500px; width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <thead>
                 <tr style="background-color: #F8FAFC; color: #4B5563;">
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px;">อันดับ</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">อันดับ</th>
                     <th style="border: 1px solid #E2E8F0; padding: 8px 12px;">ชื่อผู้เล่น</th>
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">คะแนนสะสม</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">คะแนนรวมสะสม</th>
                 </tr>
             </thead>
             <tbody id="leaderboard-body">
@@ -322,15 +337,34 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')">ย้อนกลับ</button>
     </div>
 
-    <div id="admin-screen" class="screen">
+    <!-- หน้า แอดมิน (อัปเดตใหม่) -->
+    <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>⚙️ แผงควบคุมระบบ (Admin)</h1>
-        <div class="menu-buttons" style="width: 100%; max-width: 300px; margin-top: 20px;">
-            <button style="background: #EF4444; width: 100%;" onclick="alert('ล้างหน้ากระดานคะแนนสะสมเรียบร้อยแล้ว!')">🗑️ ล้างหน้ากระดานคะแนนสะสม</button>
-            <button style="background: #F59E0B; width: 100%;" onclick="let user = prompt('โปรดระบุชื่อ User ที่ต้องการเพิ่มพลังงาน:'); if(user) alert('เพิ่มพลังงานให้ ' + user + ' เรียบร้อย!')">⚡ เพิ่มพลังงานให้ผู้เล่น</button>
-            <button class="btn-back" style="width: 100%;" onclick="switchScreen('menu-screen')">ย้อนกลับ</button>
+        
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">ชื่อผู้เล่น</th>
+                        <th style="width: 15%; text-align: center;">พลังงาน</th>
+                        <th style="width: 25%; text-align: center;">เติมพลังงาน</th>
+                        <th style="width: 20%; text-align: center;">สถานะวันนี้</th>
+                        <th style="width: 15%; text-align: center;">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-user-list">
+                    <tr><td colspan="5" style="text-align: center;">กำลังโหลดข้อมูลผู้เล่น...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display: flex; gap: 15px; width: 100%; max-width: 600px; justify-content: center;">
+            <button style="background: #EF4444;" onclick="clearLeaderboard()">🗑️ ล้างคะแนนสะสมทั้งหมด</button>
+            <button class="btn-back" onclick="switchScreen('menu-screen')" style="margin-top: 8px;">ย้อนกลับ</button>
         </div>
     </div>
 
+    <!-- หน้าจบเกม -->
     <div id="result-screen" class="screen">
         <h1 style="color: #EF4444; font-size: 34px;">🎮 จบเกมการเล่น!</h1>
         <h2 style="font-size: 26px;">คะแนนรอบนี้ของคุณ: <span id="final-score" style="color: var(--primary);">0</span></h2>
@@ -344,7 +378,7 @@
 </div>
 
 <script>
-    // URL ที่สกัดจาก JWT Token ที่ให้มา
+    // URL และ Key สำหรับเชื่อมต่อ Supabase
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
     
@@ -436,7 +470,7 @@
         
         if (!u || !p) return alert('กรุณากรอก Username และ Password');
 
-        // --- เพิ่มระบบ Bypass แอดมินจำลองกลับมา เพื่อให้รันทดสอบได้ ---
+        // บัญชี Admin สำรองแบบ Bypass
         if (u === 'admin' && p === 'adminhse') {
             currentUser = { display_name: 'Admin HSE', username: 'admin', energy: 999, role: 'admin', hasSavedToday: false };
             updateMenuUI();
@@ -452,7 +486,6 @@
             }
 
             currentUser = data;
-            
             const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
             currentUser.hasSavedToday = (currentUser.last_saved_date === today);
 
@@ -503,36 +536,122 @@
         }
     }
 
+    // ฟังก์ชันคำนวณและแสดงกระดานคะแนนแบบบวกสะสม
     async function showLeaderboard() {
         switchScreen('scoreboard-screen');
         const tbody = document.getElementById('leaderboard-body');
         tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
 
         try {
-            const { data, error } = await supabaseClient
-                .from('scores')
-                .select(`score, username, users(display_name)`)
-                .order('score', { ascending: false })
-                .limit(10);
+            // ดึงคะแนนทั้งหมดมาเพื่อนำมาหาผลรวม
+            const { data, error } = await supabaseClient.from('scores').select('score, username, users(display_name)');
 
             if (error || !data || data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = data.map((row, index) => {
-                let dName = row.users ? row.users.display_name : row.username;
-                return `
+            // คำนวณผลรวมคะแนนของแต่ละ User
+            let aggregatedScores = {};
+            data.forEach(row => {
+                if (!aggregatedScores[row.username]) {
+                    aggregatedScores[row.username] = {
+                        displayName: row.users ? row.users.display_name : row.username,
+                        totalScore: 0
+                    };
+                }
+                aggregatedScores[row.username].totalScore += row.score;
+            });
+
+            // เรียงลำดับจากมากไปน้อย และดึง 10 อันดับแรก
+            let sortedScores = Object.values(aggregatedScores).sort((a, b) => b.totalScore - a.totalScore).slice(0, 10);
+
+            tbody.innerHTML = sortedScores.map((player, index) => `
                 <tr>
                     <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">${index + 1}</td>
-                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px;">${dName}</td>
-                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">${row.score}</td>
+                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px;">${player.displayName}</td>
+                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right; font-weight: bold; color: var(--primary);">${player.totalScore.toLocaleString()}</td>
                 </tr>
-            `}).join('');
+            `).join('');
+
         } catch(err) {
             tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ดึงข้อมูลล้มเหลว</td></tr>';
         }
     }
+
+    // --- ส่วนหน้าควบคุมแอดมิน ---
+    function showAdminPanel() {
+        switchScreen('admin-screen');
+        loadAdminData();
+    }
+
+    async function loadAdminData() {
+        const tbody = document.getElementById('admin-user-list');
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px;">กำลังโหลดข้อมูลผู้เล่น...</td></tr>';
+
+        try {
+            // ดึงข้อมูล User ทั้งหมดที่ไม่ใช่ Admin
+            const { data, error } = await supabaseClient.from('users').select('*').neq('role', 'admin').order('display_name', { ascending: true });
+
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px;">ยังไม่มีผู้เล่นในระบบ</td></tr>';
+                return;
+            }
+
+            const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+
+            tbody.innerHTML = data.map(user => {
+                const isRecorded = user.last_saved_date === today;
+                return `
+                <tr>
+                    <td><strong>${user.display_name}</strong><br><span style="font-size: 11px; color: #6B7280;">(${user.username})</span></td>
+                    <td style="text-align: center; font-weight: bold;">${user.energy}</td>
+                    <td style="text-align: center;">
+                        <input type="number" id="add-energy-${user.username}" value="1" min="1" style="width: 50px; padding: 4px; text-align: center; font-size: 13px;">
+                        <button onclick="addEnergyToUser('${user.username}', ${user.energy})" style="width: auto; padding: 4px 8px; font-size: 12px; margin: 0; margin-left: 4px;">เติม</button>
+                    </td>
+                    <td style="text-align: center; font-weight: 600; color: ${isRecorded ? '#10B981' : '#9CA3AF'};">
+                        ${isRecorded ? '✅ Recorded' : '⏳ รอเล่น'}
+                    </td>
+                    <td style="text-align: center;">
+                        <button onclick="allowReRecord('${user.username}', '${user.display_name}')" ${!isRecorded ? 'disabled' : 'style="background: #F59E0B;"'} style="width: auto; padding: 4px 8px; font-size: 12px; margin: 0;">Re-record</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        } catch (err) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px;">ดึงข้อมูลล้มเหลว</td></tr>';
+        }
+    }
+
+    async function addEnergyToUser(username, currentEnergy) {
+        const addAmount = parseInt(document.getElementById(`add-energy-${username}`).value);
+        if (isNaN(addAmount) || addAmount <= 0) return alert('กรุณาระบุจำนวนพลังงานให้ถูกต้อง');
+
+        const newEnergy = currentEnergy + addAmount;
+        await supabaseClient.from('users').update({ energy: newEnergy }).eq('username', username);
+        alert(`เติมพลังงานให้เรียบร้อยแล้ว!`);
+        loadAdminData();
+    }
+
+    async function allowReRecord(username, display_name) {
+        if (!confirm(`ต้องการเปิดให้คุณ ${display_name} กลับไปเล่นและบันทึกคะแนนใหม่ของวันนี้ ใช่หรือไม่?`)) return;
+
+        // ล้างวันที่บันทึกล่าสุดออก ทำให้สถานะกลับมาเป็นรอเล่น
+        await supabaseClient.from('users').update({ last_saved_date: null }).eq('username', username);
+        alert('ปลดล็อกให้บันทึกคะแนนรอบใหม่ได้สำเร็จ!');
+        loadAdminData();
+    }
+
+    async function clearLeaderboard() {
+        if (!confirm('⚠️ คำเตือน: คุณต้องการล้างข้อมูลกระดานคะแนนสะสมทั้งหมดใช่หรือไม่? การกระทำนี้ไม่สามารถกู้คืนได้!')) return;
+        
+        // ลบข้อมูลทั้งหมดจากตาราง scores
+        await supabaseClient.from('scores').delete().gt('score', -1);
+        alert('ล้างข้อมูลกระดานคะแนนเรียบร้อยแล้ว!');
+    }
+    // --- สิ้นสุดส่วนหน้าควบคุมแอดมิน ---
+
 
     function updateMenuUI() {
         document.getElementById('player-name').innerText = currentUser.display_name;
