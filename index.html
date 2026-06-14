@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Rhythm: ศึกคัดขยะห้าสี จังหวะขยี้ใจ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --blue: #3B82F6; --yellow: #FBBF24; --green: #10B981; 
+            --red: #EF4444; --orange: #F97316; --bg: #F0FDF4;
+            --text: #1F2937; --primary: #059669;
+        }
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
+        }
+        .container {
+            width: 100%; max-width: 850px; height: 680px;
+            background: white; border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+            border: 4px solid #E2E8F0;
+        }
+        .screen {
+            display: none; width: 100%; height: 100%;
+            padding: 30px; box-sizing: border-box; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        #howto-screen { justify-content: flex-start; padding-top: 25px; padding-bottom: 15px; }
+        
+        .active { display: flex; }
+        
+        .logo-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-top: 0;
+            background: linear-gradient(90deg, #3B82F6, #10B981, #FBBF24, #EF4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse-logo 1.5s infinite alternate;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+        }
+        .logo-subtitle {
+            font-size: 22px;
+            color: #4B5563;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        @keyframes pulse-logo {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        h1 { color: var(--primary); margin-bottom: 15px; font-size: 30px; text-shadow: 1px 1px 2px rgba(0,0,0,0.05); text-align: center; margin-top: 0; }
+        h2 { color: #4B5563; margin-bottom: 10px; font-size: 18px; text-align: center; margin-top: 10px; }
+        
+        .form-group { display: flex; flex-direction: column; margin-bottom: 10px; width: 300px; }
+        .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #4B5563; }
+        input { 
+            padding: 10px 14px; border-radius: 10px; border: 2px solid #E2E8F0; 
+            font-family: 'Kanit'; width: 100%; box-sizing: border-box; font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        input:focus { outline: none; border-color: var(--primary); }
+        
+        button {
+            padding: 12px 24px; font-family: 'Kanit'; font-weight: 600; font-size: 16px;
+            border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s;
+            background: var(--primary); color: white; margin: 8px; width: 220px;
+            box-shadow: 0 4px 6px rgba(5, 150, 105, 0.1);
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(5, 150, 105, 0.15); filter: brightness(1.05); }
+        button.btn-back { background: #94A3B8; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 15px;}
+        button.btn-back:hover { background: #64748B; }
+        
+        .menu-buttons { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: 15px; }
+        
+        .top-bar {
+            position: absolute; top: 0; left: 0; width: 100%; padding: 15px 25px;
+            display: flex; justify-content: space-between; box-sizing: border-box;
+            font-weight: 600; font-size: 16px; background: #F8FAFC; border-bottom: 2px solid #F1F5F9;
+            z-index: 10; align-items: center;
+        }
+
+        .trash-display { display: flex; gap: 15px; min-height: 100px; margin-bottom: 20px; justify-content: center; align-items: flex-end; }
+        .trash-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; }
+        .trash-item .emoji { font-size: 55px; line-height: 1; }
+        .trash-item .name { font-size: 13px; color: #4B5563; font-weight: 600; text-align: center; line-height: 1.1; max-width: 80px; word-break: break-word; }
+        
+        .input-display { font-size: 45px; display: flex; gap: 15px; min-height: 70px; color: #9CA3AF; justify-content: center; align-items: center; }
+        
+        .keyboard-ui { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 480px; align-items: center; }
+        .key-row-letters { display: flex; justify-content: space-between; width: 100%; gap: 10px; }
+        .key-box { 
+            flex: 1; padding: 10px 5px; border-radius: 12px; font-weight: bold; color: white; text-align: center;
+            font-size: 13px; box-shadow: 0 4px 0 rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); line-height: 1.2;
+        }
+        .key-z { background: var(--blue); } 
+        .key-x { background: var(--yellow); color: #1F2937; }
+        .key-c { background: var(--green); } 
+        .key-v { background: var(--red); }
+        .key-b { background: var(--orange); }
+        
+        .key-row-space { width: 100%; }
+        .key-space {
+            width: 100%; padding: 10px 0; border-radius: 12px; font-weight: bold; color: #4B5563;
+            background: #E2E8F0; text-align: center; font-size: 14px; box-shadow: 0 4px 0 #CBD5E1;
+            border: 1px solid #CBD5E1; box-sizing: border-box;
+        }
+        
+        .hearts { color: #EF4444; font-size: 24px; }
+        .status-text { font-size: 26px; font-weight: bold; margin-bottom: 5px; height: 40px; text-align: center; transition: all 0.2s;}
+        
+        .howto-desc { max-width: 750px; text-align: left; font-size: 13px; line-height: 1.4; color: #1F2937; background: #F0FDF4; padding: 10px 20px; border-radius: 12px; border: 1px dashed #10B981; }
+        .trash-guide-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 780px; margin-top: 5px;
+        }
+        .guide-card {
+            display: flex; align-items: center; gap: 10px; background: #F8FAFC; border: 1px solid #E2E8F0; 
+            padding: 6px 10px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .guide-card .emoji { font-size: 22px; }
+        .guide-card .info { display: flex; flex-direction: column; font-size: 12px; line-height: 1.2; }
+        .guide-card .title { font-weight: 600; color: #1F2937; }
+        
+        .popup-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center;
+            backdrop-filter: blur(2px);
+        }
+        .popup-box {
+            background: white; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .blind-text { animation: pulse 1s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div id="keyboard-popup" class="popup-overlay">
+        <div class="popup-box">
+            <h2 style="color: #EF4444; font-size: 28px; margin-top: 0;">⚠️ โปรดระวัง!</h2>
+            <p style="font-size: 16px; color: #4B5563; margin-bottom: 25px;">
+                กรุณาเปลี่ยนภาษาในคีย์บอร์ดของผู้เล่นเป็น <strong>ภาษาอังกฤษ (ENG)</strong> เสมอก่อนเริ่มเล่นเกม เพื่อให้การกดปุ่มตอบสนองได้อย่างถูกต้อง
+            </p>
+            <button onclick="confirmStartGame()" style="width: 100%; background: #10B981; margin-bottom: 10px;">เริ่มเล่นเกม</button>
+            <button onclick="document.getElementById('keyboard-popup').style.display='none'" class="btn-back" style="width: 100%;">ยกเลิก</button>
+        </div>
+    </div>
+
+    <div id="login-screen" class="screen active">
+        <h1 class="logo-title">🎵 Sorting Rhythm</h1>
+        <h2 class="logo-subtitle">ศึกคัดขยะห้าสี จังหวะขยี้ใจ</h2>
+        <p style="color: #6B7280; font-size: 13px; margin-bottom: 25px; font-weight: 600;">จัดทำโดย แผนก hse - wind energy holding</p>
+        <div class="form-group">
+            <label for="login-user">ชื่อผู้ใช้งาน (Username)</label>
+            <input type="text" id="login-user" placeholder="Username" onkeypress="handleLoginEnter(event)">
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="login-pass">รหัสผ่าน (Password)</label>
+            <input type="password" id="login-pass" placeholder="Password" onkeypress="handleLoginEnter(event)">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+            <button onclick="login()" style="width: 300px; background: #10B981;">เข้าสู่ระบบ</button>
+            <button style="background: #3B82F6; width: 300px;" onclick="switchScreen('register-screen')">สมัครสมาชิกใหม่</button>
+        </div>
+    </div>
+
+    <div id="register-screen" class="screen">
+        <h1 class="logo-title" style="font-size: 28px;">📝 สมัครสมาชิก</h1>
+        <div class="form-group" style="margin-top: 15px;">
+            <label for="reg-display">1. ชื่อที่แสดงในบอร์ดสะสมคะแนน</label>
+            <input type="text" id="reg-display" placeholder="Display Name">
+        </div>
+        <div class="form-group">
+            <label for="reg-fullname">2. ชื่อ-นามสกุล (จริง)</label>
+            <input type="text" id="reg-fullname" placeholder="ชื่อ และ นามสกุลจริง">
+        </div>
+        <div class="form-group">
+            <label for="reg-dept">3. แผนก</label>
+            <input type="text" id="reg-dept" placeholder="เช่น HSE, บัญชี, คลังสินค้า">
+        </div>
+        <div class="form-group">
+            <label for="reg-user">4. User</label>
+            <input type="text" id="reg-user" placeholder="สำหรับใช้เข้าสู่ระบบ">
+        </div>
+        <div class="form-group">
+            <label for="reg-pass">5. Password</label>
+            <input type="password" id="reg-pass" placeholder="รหัสผ่าน">
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="reg-confirm">6. ยืนยัน Password</label>
+            <input type="password" id="reg-confirm" placeholder="กรอกรหัสผ่านอีกครั้ง">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="register()" style="width: 140px;">ลงทะเบียน</button>
+            <button class="btn-back" onclick="switchScreen('login-screen')" style="width: 140px; margin-top: 8px;">ย้อนกลับ</button>
+        </div>
+    </div>
+
+    <div id="menu-screen" class="screen">
+        <div class="top-bar">
+            <span id="player-name">Player</span>
+            <span style="font-size: 14px; text-align: right;">
+                ⚡ พลังงาน: <span id="player-energy">2</span>/2<br>
+                <span id="energy-timer" style="color: #6B7280; font-size: 12px;">⏳ รีเซ็ตใน 00:00:00</span>
+            </span>
+        </div>
+        <h1 class="logo-title" style="margin-top: 30px;">🎵 Sorting Rhythm</h1>
+        <div class="menu-buttons" style="margin-top: 30px;">
+            <button onclick="showStartPopup()" style="background: #10B981; font-size: 18px; padding: 14px 40px; width: 250px; border-radius: 16px;">▶ เริ่มต้นเล่นเกม</button>
+            <button onclick="switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
+            <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
+            <button id="admin-btn" style="display:none; background: #8B5CF6; width: 250px;" onclick="switchScreen('admin-screen')">⚙️ แผงควบคุมแอดมิน</button>
+            <button onclick="logout()" class="btn-back" style="width: 250px; margin-top: 15px;">ออกจากระบบ</button>
+        </div>
+    </div>
+
+    <div id="howto-screen" class="screen">
+        <h1>📖 วิธีการเล่นเบื้องต้น</h1>
+        <div class="howto-desc">
+            <ul style="margin: 0; padding-left: 20px;">
+                <li style="margin-bottom: 3px;"><strong>โหมดปกติ:</strong> เมื่อเริ่มเกม จะมีรูปขยะแสดงขึ้นมา ผู้เล่นสามารถ <strong>กดสีถังขยะให้ตรงตามประเภทขยะทันทีที่เห็น จากนั้นกด space bar เพื่อยืนยันคำตอบ</strong> ให้เร็วที่สุด เพื่อรับคะแนน (ตัวละ 100 คะแนน)</li>
+                <li><strong>โหมดพิเศษ (Blind Stage):</strong> เป็นรอบรอยต่อของด่าน จะมีเวลาให้จดจำขยะตามเวลาที่กำหนดของด่านนั้นๆ จากนั้นขยะจะหายไป ให้กดสีเรียงลำดับจากความจำ แล้วกด space bar <strong>(ได้คะแนนคูณพิเศษ 150 คะแนน/ชิ้น)</strong></li>
+            </ul>
+        </div>
+        
+        <div class="keyboard-ui" style="max-width: 480px; margin-top: 8px;">
+            <div class="key-row-letters">
+                <div class="key-box key-z">Z<br>ทั่วไป<br>(น้ำเงิน)</div>
+                <div class="key-box key-x">X<br>รีไซเคิล<br>(เหลือง)</div>
+                <div class="key-box key-c">C<br>เปียก<br>(เขียว)</div>
+                <div class="key-box key-v">V<br>อันตราย<br>(แดง)</div>
+                <div class="key-box key-b">B<br>ติดเชื้อ<br>(ส้ม)</div>
+            </div>
+            <div class="key-row-space">
+                <div class="key-space">SPACEBAR - ยืนยันคำตอบ</div>
+            </div>
+        </div>
+
+        <h2 style="font-size: 16px;">🗑️ ประเภทขยะที่จะสุ่มขึ้นในเกม</h2>
+        <div class="trash-guide-grid">
+            <div class="guide-card"><span class="emoji">🍬</span><div class="info"><span class="title">ซองขนม</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
+            <div class="guide-card"><span class="emoji">🛍️</span><div class="info"><span class="title">ถุงพลาสติก</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
+            <div class="guide-card"><span class="emoji">🥣</span><div class="info"><span class="title">กล่องพลาสติก</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
+            
+            <div class="guide-card"><span class="emoji">🍶</span><div class="info"><span class="title">ขวดน้ำ</span><span style="color:#D97706">X - ขยะรีไซเคิล</span></div></div>
+            <div class="guide-card"><span class="emoji">🥤</span><div class="info"><span class="title">แก้วกาแฟ</span><span style="color:#D97706">X - ขยะรีไซเคิล</span></div></div>
+            <div class="guide-card"><span class="emoji">🍎</span><div class="info"><span class="title">ผัก/ผลไม้</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
+            
+            <div class="guide-card"><span class="emoji">🐟</span><div class="info"><span class="title">ก้างปลา</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
+            <div class="guide-card"><span class="emoji">🦴</span><div class="info"><span class="title">กระดูก</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
+            <div class="guide-card"><span class="emoji">😷</span><div class="info"><span class="title">หน้ากากอนามัย</span><span style="color:#EA580C">B - ขยะติดเชื้อ</span></div></div>
+            
+            <div class="guide-card"><span class="emoji">🩹</span><div class="info"><span class="title">พลาสเตอร์</span><span style="color:#EA580C">B - ขยะติดเชื้อ</span></div></div>
+            <div class="guide-card"><span class="emoji">🔋</span><div class="info"><span class="title">ถ่านแบตเตอรี่</span><span style="color:var(--red)">V - ขยะอันตราย</span></div></div>
+            <div class="guide-card"><span class="emoji">💡</span><div class="info"><span class="title">หลอดไฟ</span><span style="color:var(--red)">V - ขยะอันตราย</span></div></div>
+        </div>
+        
+        <button class="btn-back" onclick="switchScreen('menu-screen')" style="width: 250px; margin-top: 10px;">ย้อนกลับ</button>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="top-bar">
+            <span>Stage: <span id="ui-stage">1</span></span>
+            <span>Score: <span id="ui-score">0</span></span>
+            <span class="hearts" id="ui-hearts">❤️❤️❤️❤️❤️</span>
+        </div>
+        <div id="game-status" class="status-text">พร้อมมั้ย!</div>
+        <div class="trash-display" id="trash-container"></div>
+        <div class="input-display" id="input-container"></div>
+        
+        <div id="timer-bar" style="width: 100%; max-width: 480px; height: 10px; background: #E5E7EB; margin-top: 15px; border-radius: 5px; overflow: hidden; display: none;">
+            <div id="timer-progress" style="width: 100%; height: 100%; background: #60A5FA; transition: width 0.1s linear;"></div>
+        </div>
+        
+        <div class="keyboard-ui">
+            <div class="key-row-letters">
+                <div class="key-box key-z">Z<br>ทั่วไป</div>
+                <div class="key-box key-x">X<br>รีไซเคิล</div>
+                <div class="key-box key-c">C<br>เปียก</div>
+                <div class="key-box key-v">V<br>อันตราย</div>
+                <div class="key-box key-b">B<br>ติดเชื้อ</div>
+            </div>
+            <div class="key-row-space">
+                <div class="key-space">SPACEBAR - ยืนยันคำตอบ</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreboard-screen" class="screen">
+        <h1>🏆 กระดานคะแนนสะสม</h1>
+        <table class="howto-table" style="max-width: 500px; width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <thead>
+                <tr style="background-color: #F8FAFC; color: #4B5563;">
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px;">อันดับ</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px;">ชื่อผู้เล่น</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">คะแนนสะสม</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ไม่มีข้อมูลคะแนน</td></tr>
+            </tbody>
+        </table>
+        <button class="btn-back" onclick="switchScreen('menu-screen')">ย้อนกลับ</button>
+    </div>
+
+    <div id="admin-screen" class="screen">
+        <h1>⚙️ แผงควบคุมระบบ (Admin)</h1>
+        <div class="menu-buttons" style="width: 100%; max-width: 300px; margin-top: 20px;">
+            <button style="background: #EF4444; width: 100%;" onclick="alert('ล้างหน้ากระดานคะแนนสะสมเรียบร้อยแล้ว!')">🗑️ ล้างหน้ากระดานคะแนนสะสม</button>
+            <button style="background: #F59E0B; width: 100%;" onclick="let user = prompt('โปรดระบุชื่อ User ที่ต้องการเพิ่มพลังงาน:'); if(user) alert('เพิ่มพลังงานให้ ' + user + ' เรียบร้อย!')">⚡ เพิ่มพลังงานให้ผู้เล่น</button>
+            <button class="btn-back" style="width: 100%;" onclick="switchScreen('menu-screen')">ย้อนกลับ</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <h1 style="color: #EF4444; font-size: 34px;">🎮 จบเกมการเล่น!</h1>
+        <h2 style="font-size: 26px;">คะแนนรอบนี้ของคุณ: <span id="final-score" style="color: var(--primary);">0</span></h2>
+        <div id="score-selection" style="display: none; background: #F8FAFC; padding: 15px; border-radius: 16px; margin-bottom: 15px; border: 2px dashed #CBD5E1; text-align: center;">
+            <p style="font-weight: 600; color: #4B5563; margin-top: 0;">คุณมีคะแนนที่เล่นครบแล้ว เลือกบันทึกคะแนนรอบที่ต้องการ:</p>
+            <button id="btn-score1" onclick="saveScore(1)" style="width: 100%; background: #3B82F6; margin: 4px 0;"></button>
+            <button id="btn-score2" onclick="saveScore(2)" style="width: 100%; background: #10B981; margin: 4px 0; display: none;"></button>
+        </div>
+        <button onclick="switchScreen('menu-screen')" id="btn-back-menu" class="btn-back" style="width: auto;">กลับเมนูหลักโดยไม่บันทึก</button>
+    </div>
+</div>
+
+<script>
+    // URL ที่สกัดจาก JWT Token ที่ให้มา
+    const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
+    
+    // สร้าง Supabase Client
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const trashes = [
+        { id: 1, emoji: '🍬', key: 'z', name: 'ซองขนม' }, { id: 2, emoji: '🛍️', key: 'z', name: 'ถุงพลาสติก' }, { id: 3, emoji: '🥣', key: 'z', name: 'กล่องพลาสติก' },
+        { id: 4, emoji: '🍶', key: 'x', name: 'ขวดน้ำ' }, { id: 5, emoji: '🥤', key: 'x', name: 'แก้วกาแฟ' },
+        { id: 6, emoji: '🍎', key: 'c', name: 'ผัก/ผลไม้' }, { id: 7, emoji: '🐟', key: 'c', name: 'ก้างปลา' }, { id: 8, emoji: '🦴', key: 'c', name: 'กระดูก' },
+        { id: 9, emoji: '😷', key: 'b', name: 'หน้ากากอนามัย' }, { id: 10, emoji: '🩹', key: 'b', name: 'พลาสเตอร์ปิดแผล' },
+        { id: 11, emoji: '🔋', key: 'v', name: 'ถ่านแบตเตอรี่' }, { id: 12, emoji: '💡', key: 'v', name: 'หลอดไฟ' }
+    ];
+
+    function getRoundConfig(index) {
+        // Stage 1 (Normal = 16s, Blind = 12s)
+        if (index === 0) return { label: '1', count: 3, time: 16.0, blind: false };
+        if (index === 1) return { label: '1', count: 3, time: 16.0, blind: false };
+        if (index === 2) return { label: '1', count: 4, time: 16.0, blind: false };
+        if (index === 3) return { label: '1 (Blind)', count: 4, time: 12.0, blind: true };
+        
+        // Stage 2 (Normal = 14s, Blind = 11s)
+        if (index === 4) return { label: '2', count: 4, time: 14.0, blind: false };
+        if (index === 5) return { label: '2', count: 4, time: 14.0, blind: false };
+        if (index === 6) return { label: '2', count: 4, time: 14.0, blind: false };
+        if (index === 7) return { label: '2 (Blind)', count: 4, time: 11.0, blind: true };
+
+        // Stage 3 (Normal = 12s, Blind = 10s)
+        if (index === 8) return { label: '3', count: 4, time: 12.0, blind: false };
+        if (index === 9) return { label: '3', count: 5, time: 12.0, blind: false };
+        if (index === 10) return { label: '3', count: 5, time: 12.0, blind: false };
+        if (index === 11) return { label: '3 (Blind)', count: 5, time: 10.0, blind: true };
+
+        // Final Stage เริ่มต้น (Normal = 10s, Blind = 9s)
+        if (index === 12) return { label: 'Final', count: 5, time: 10.0, blind: false };
+        if (index === 13) return { label: 'Final', count: 5, time: 10.0, blind: false };
+        if (index === 14) return { label: 'Final', count: 5, time: 10.0, blind: false };
+        if (index === 15) return { label: 'Final (Blind)', count: 5, time: 9.0, blind: true };
+
+        // Final Stage วนลูปไม่รู้จบ
+        let loopIndex = (index - 16) % 4;
+        if (loopIndex < 3) {
+            return { label: 'Final', count: 6, time: 10.0, blind: false };
+        } else {
+            return { label: 'Final (Blind)', count: 6, time: 9.0, blind: true };
+        }
+    }
+
+    let currentUser = null;
+    let gameState = {
+        isPlaying: false, phase: 'idle',
+        roundIndex: 0, hearts: 5, score: 0,
+        sequence: [], playerInput: [],
+        targetTime: 0, inputStartTime: 0, perfectCombo: 0,
+        scoreHistory: [], isBlind: false
+    };
+    let inputTimerInterval;
+
+    function updateMidnightTimer() {
+        const now = new Date();
+        const bkkTimeStr = now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"});
+        const bkkDate = new Date(bkkTimeStr);
+        const tomorrow = new Date(bkkDate);
+        tomorrow.setHours(24, 0, 0, 0); 
+        
+        const diff = tomorrow - bkkDate; 
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const timerEl = document.getElementById('energy-timer');
+        if(timerEl) {
+            timerEl.innerText = `⏳ รีเซ็ตใน ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+        
+        if(h === 0 && m === 0 && s === 0 && currentUser) {
+            currentUser.energy = 2;
+            currentUser.hasSavedToday = false;
+            if(document.getElementById('menu-screen').classList.contains('active')) updateMenuUI();
+        }
+    }
+    setInterval(updateMidnightTimer, 1000);
+
+    function handleLoginEnter(event) { if (event.key === 'Enter') login(); }
+
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    async function login() {
+        const u = document.getElementById('login-user').value;
+        const p = document.getElementById('login-pass').value;
+        
+        if (!u || !p) return alert('กรุณากรอก Username และ Password');
+
+        // ดึงข้อมูลจริงจาก Supabase
+        const { data, error } = await supabase.from('users').select('*').eq('username', u).eq('password', p).single();
+
+        if (error || !data) {
+            return alert('Username หรือ Password ไม่ถูกต้อง!');
+        }
+
+        currentUser = data;
+        
+        const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+        currentUser.hasSavedToday = (currentUser.last_saved_date === today);
+
+        updateMenuUI();
+        switchScreen('menu-screen');
+    }
+
+    function logout() { 
+        currentUser = null; 
+        document.getElementById('login-user').value = '';
+        document.getElementById('login-pass').value = '';
+        switchScreen('login-screen'); 
+    }
+
+    async function register() {
+        const display = document.getElementById('reg-display').value;
+        const fullname = document.getElementById('reg-fullname').value;
+        const dept = document.getElementById('reg-dept').value;
+        const user = document.getElementById('reg-user').value;
+        const pass = document.getElementById('reg-pass').value;
+        const confirm = document.getElementById('reg-confirm').value;
+
+        if (!display || !fullname || !dept || !user || !pass || !confirm) return alert('กรุณากรอกข้อมูลให้ครบทุกช่องก่อนยืนยัน');
+        if (pass !== confirm) return alert('รหัสผ่านและช่องยืนยันรหัสผ่านไม่ตรงกัน');
+
+        // ส่งข้อมูลเข้า Supabase
+        const { data, error } = await supabase.from('users').insert([
+            { display_name: display, full_name: fullname, department: dept, username: user, password: pass }
+        ]);
+
+        if (error) {
+            if(error.code === '23505') alert('Username หรือ Display Name นี้มีคนใช้แล้ว กรุณาเปลี่ยนใหม่');
+            else alert('เกิดข้อผิดพลาด: ' + error.message);
+            return;
+        }
+
+        alert('สมัครสมาชิกสำเร็จเรียบร้อยแล้ว!');
+        switchScreen('login-screen');
+        
+        document.getElementById('reg-display').value = ''; document.getElementById('reg-fullname').value = '';
+        document.getElementById('reg-dept').value = ''; document.getElementById('reg-user').value = '';
+        document.getElementById('reg-pass').value = ''; document.getElementById('reg-confirm').value = '';
+    }
+
+    async function showLeaderboard() {
+        switchScreen('scoreboard-screen');
+        const tbody = document.getElementById('leaderboard-body');
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
+
+        // ดึงข้อมูล 10 อันดับแรกจาก Database
+        const { data, error } = await supabase
+            .from('scores')
+            .select(`score, username, users(display_name)`)
+            .order('score', { ascending: false })
+            .limit(10);
+
+        if (error || !data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = data.map((row, index) => {
+            let dName = row.users ? row.users.display_name : row.username;
+            return `
+            <tr>
+                <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">${index + 1}</td>
+                <td style="border: 1px solid #E2E8F0; padding: 8px 12px;">${dName}</td>
+                <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">${row.score}</td>
+            </tr>
+        `}).join('');
+    }
+
+    function updateMenuUI() {
+        document.getElementById('player-name').innerText = currentUser.display_name;
+        document.getElementById('player-energy').innerText = currentUser.role === 'admin' ? '∞' : currentUser.energy;
+        document.getElementById('admin-btn').style.display = currentUser.role === 'admin' ? 'block' : 'none';
+    }
+
+    function showStartPopup() {
+        if (currentUser.role !== 'admin' && currentUser.energy <= 0) return alert('พลังงานของคุณหมดแล้วสําหรับวันนี้! กรุณารอเวลาพลังงานรีเซ็ตตอนเที่ยงคืนครับ');
+        document.getElementById('keyboard-popup').style.display = 'flex';
+    }
+
+    async function confirmStartGame() {
+        document.getElementById('keyboard-popup').style.display = 'none';
+        
+        if (currentUser.role !== 'admin') {
+            currentUser.energy--;
+            // ลดพลังงานใน Database จริง
+            await supabase.from('users').update({ energy: currentUser.energy }).eq('username', currentUser.username);
+        }
+        updateMenuUI();
+
+        gameState = { isPlaying: true, phase: 'memorize', roundIndex: 0, hearts: 5, score: 0, sequence: [], playerInput: [], perfectCombo: 0, scoreHistory: gameState.scoreHistory, isBlind: false };
+        updateGameUI();
+        switchScreen('game-screen');
+        nextRound();
+    }
+
+    function nextRound() {
+        if(gameState.hearts <= 0) return gameOver();
+        
+        let config = getRoundConfig(gameState.roundIndex);
+        
+        gameState.targetTime = config.time;
+        gameState.isBlind = config.blind;
+        document.getElementById('ui-stage').innerText = config.label;
+        
+        gameState.sequence = [];
+        for(let i=0; i<config.count; i++) gameState.sequence.push(trashes[Math.floor(Math.random() * trashes.length)]);
+        
+        document.getElementById('timer-bar').style.display = 'none';
+        clearInterval(inputTimerInterval);
+        
+        if (gameState.isBlind) {
+            gameState.phase = 'memorize';
+            document.getElementById('game-status').innerHTML = `<span class="blind-text" style="color: #EF4444;">🚨 BLIND STAGE! จดจำขยะ (${config.time} วิ) 🚨</span>`;
+            renderTrashes(gameState.sequence, true);
+            renderInputs([]);
+            
+            document.getElementById('timer-bar').style.display = 'block';
+            document.getElementById('timer-progress').style.width = '100%';
+            
+            gameState.inputStartTime = Date.now();
+            inputTimerInterval = setInterval(() => {
+                if(gameState.phase !== 'memorize') return clearInterval(inputTimerInterval);
+                let elapsed = (Date.now() - gameState.inputStartTime) / 1000;
+                let percent = Math.max(0, 100 - (elapsed / config.time * 100));
+                document.getElementById('timer-progress').style.width = percent + '%';
+                
+                if(elapsed >= config.time) {
+                    clearInterval(inputTimerInterval);
+                    startInputPhase();
+                }
+            }, 100);
+
+        } else {
+            document.getElementById('game-status').innerHTML = '<span style="color: #374151;">เรียงลำดับสีขยะตามโจทย์ ทันที!</span>';
+            renderTrashes(gameState.sequence, true);
+            startInputPhase(); 
+        }
+    }
+
+    function startInputPhase() {
+        gameState.phase = 'input';
+        gameState.playerInput = [];
+        
+        if (gameState.isBlind) {
+            document.getElementById('game-status').innerHTML = '<span style="color: #EF4444;">เรียงลำดับสีขยะจากความจำ!</span>';
+            renderTrashes(gameState.sequence.map(() => ({emoji: '❓', name: ''})), false);
+        }
+        
+        renderInputs([]);
+        
+        document.getElementById('timer-bar').style.display = 'block';
+        document.getElementById('timer-progress').style.width = '100%';
+        
+        gameState.inputStartTime = Date.now();
+        clearInterval(inputTimerInterval);
+        inputTimerInterval = setInterval(checkTimer, 100);
+    }
+
+    function checkTimer() {
+        if(gameState.phase !== 'input') return clearInterval(inputTimerInterval);
+        let elapsed = (Date.now() - gameState.inputStartTime) / 1000;
+        let maxTime = gameState.targetTime; 
+        let percent = Math.max(0, 100 - (elapsed / maxTime * 100));
+        document.getElementById('timer-progress').style.width = percent + '%';
+
+        if(elapsed >= maxTime) {
+            clearInterval(inputTimerInterval);
+            handleResult('miss', true);
+        }
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if(gameState.phase !== 'input') return;
+        
+        let key = e.key.toLowerCase();
+        if (['z','x','c','v','b'].includes(key)) {
+            if(gameState.playerInput.length < gameState.sequence.length) {
+                gameState.playerInput.push(key);
+                renderInputs(gameState.playerInput);
+            }
+        } else if (key === ' ') { 
+            e.preventDefault();
+            if(gameState.playerInput.length > 0) calculateScore();
+        }
+    });
+
+    function calculateScore() {
+        clearInterval(inputTimerInterval);
+        gameState.phase = 'idle';
+        let elapsed = (Date.now() - gameState.inputStartTime) / 1000;
+        let pctTimeUsed = elapsed / gameState.targetTime; 
+        
+        let errors = 0;
+        for(let i=0; i<gameState.sequence.length; i++) {
+            if(gameState.playerInput[i] !== gameState.sequence[i].key) errors++;
+        }
+
+        if(errors === 3 && gameState.sequence.length === 3) {
+            return handleResult('miss', false);
+        }
+
+        if(pctTimeUsed >= 1.00) {
+            return handleResult('miss', true);
+        }
+
+        if(errors > 0) {
+            gameState.hearts -= errors;
+            gameState.perfectCombo = 0;
+        }
+
+        let baseScore = gameState.sequence.length * (gameState.isBlind ? 150 : 100);
+        let finalScore = 0;
+        let status = '';
+        let color = '';
+
+        if (gameState.isBlind) {
+            if (errors === 0) {
+                gameState.perfectCombo++;
+                let multiplier = gameState.perfectCombo === 1 ? 1 : 1.0 + (0.1 * gameState.perfectCombo);
+                finalScore = baseScore * multiplier;
+                status = `Perfect! (x${multiplier.toFixed(1)})`; color = '#10B981';
+            } else if (errors === 1) {
+                finalScore = baseScore * 0.7;
+                status = `Great! (ผิด 1)`; color = '#3B82F6';
+            } else if (errors === 2) {
+                finalScore = baseScore * 0.5;
+                status = `Cool! (ผิด 2)`; color = '#8B5CF6';
+            } else if (errors >= 3) {
+                finalScore = baseScore * 0.3;
+                status = `Bad! (ผิด ${errors})`; color = '#F59E0B';
+            }
+        } else {
+            if (errors > 0) {
+                if (errors >= 1 && errors <= 2) {
+                    finalScore = baseScore * 0.5; 
+                    status = `Cool! (ผิด ${errors})`; color = '#8B5CF6';
+                } else if (errors >= 3) {
+                    finalScore = baseScore * 0.3; 
+                    status = `Bad! (ผิด ${errors})`; color = '#F59E0B';
+                }
+            } else {
+                if (pctTimeUsed <= 0.60) {
+                    gameState.perfectCombo++;
+                    let multiplier = gameState.perfectCombo === 1 ? 1 : 1.0 + (0.1 * gameState.perfectCombo);
+                    finalScore = baseScore * multiplier;
+                    status = `Perfect! (x${multiplier.toFixed(1)})`; color = '#10B981';
+                } else if (pctTimeUsed <= 0.70) {
+                    finalScore = baseScore * 0.7; 
+                    status = 'Great!'; color = '#3B82F6'; gameState.perfectCombo = 0;
+                } else if (pctTimeUsed <= 0.80) {
+                    finalScore = baseScore * 0.5; 
+                    status = 'Cool!'; color = '#8B5CF6'; gameState.perfectCombo = 0;
+                } else {
+                    finalScore = baseScore * 0.3; 
+                    status = 'Bad!'; color = '#F59E0B'; gameState.perfectCombo = 0;
+                }
+            }
+        }
+
+        gameState.score += Math.round(finalScore);
+        gameState.roundIndex++; 
+        showStatus(status, color);
+        updateGameUI();
+        
+        setTimeout(nextRound, 1500);
+    }
+
+    function handleResult(type, isTimeout) {
+        gameState.phase = 'idle';
+        gameState.perfectCombo = 0;
+        let loss = gameState.sequence.length;
+        gameState.hearts -= loss;
+        showStatus('Miss! (เสีย ' + loss + ' หัวใจ)', '#EF4444');
+        updateGameUI();
+        setTimeout(nextRound, 1500);
+    }
+
+    function renderTrashes(items, showName) {
+        document.getElementById('trash-container').innerHTML = items.map(t => `
+            <div class="trash-item">
+                <div class="emoji">${t.emoji}</div>
+                <div class="name">${showName && t.name ? t.name : ''}</div>
+            </div>
+        `).join('');
+    }
+    
+    function renderInputs(inputs) {
+        const colorMap = { 'z': '🔵', 'x': '🟡', 'c': '🟢', 'v': '🔴', 'b': '🟠' };
+        document.getElementById('input-container').innerHTML = inputs.map(i => `<div>${colorMap[i]}</div>`).join('');
+    }
+
+    function updateGameUI() {
+        document.getElementById('ui-score').innerText = gameState.score;
+        document.getElementById('ui-hearts').innerText = '❤️'.repeat(Math.max(0, gameState.hearts));
+    }
+
+    function showStatus(text, color) {
+        let el = document.getElementById('game-status');
+        el.innerHTML = text; el.style.color = color;
+    }
+
+    function gameOver() {
+        gameState.isPlaying = false;
+        document.getElementById('final-score').innerText = gameState.score;
+        gameState.scoreHistory.push(gameState.score);
+
+        if(gameState.scoreHistory.length >= 2) {
+            document.getElementById('score-selection').style.display = 'block';
+            document.getElementById('btn-back-menu').style.display = 'none'; 
+            
+            let btn1 = document.getElementById('btn-score1');
+            let btn2 = document.getElementById('btn-score2');
+            
+            btn1.style.display = 'inline-block';
+            btn1.innerText = `บันทึกคะแนนรอบที่ 1: ${gameState.scoreHistory[0]} คะแนน`;
+            
+            btn2.style.display = 'inline-block';
+            btn2.innerText = `บันทึกคะแนนรอบที่ 2: ${gameState.scoreHistory[1]} คะแนน`;
+        } else {
+            document.getElementById('score-selection').style.display = 'block';
+            document.getElementById('btn-back-menu').style.display = 'block';
+            
+            document.getElementById('btn-score1').style.display = 'inline-block';
+            document.getElementById('btn-score1').innerText = `บันทึกคะแนนรอบที่ 1: ${gameState.scoreHistory[0]} คะแนน`;
+            
+            document.getElementById('btn-score2').style.display = 'none';
+        }
+        switchScreen('result-screen');
+    }
+
+    async function saveScore(roundIndex) {
+        if(currentUser.role !== 'admin' && currentUser.hasSavedToday) {
+            alert('คุณได้บันทึกคะแนนสะสมของวันนี้ไปแล้ว! สามารถรอบันทึกใหม่ได้หลังเวลาเที่ยงคืนครับ');
+            gameState.scoreHistory = []; 
+            switchScreen('menu-screen');
+            return;
+        }
+
+        let finalSelectedScore = gameState.scoreHistory[roundIndex - 1];
+        
+        // บันทึกคะแนนลง Supabase ของจริง
+        await supabase.from('scores').insert([{ username: currentUser.username, score: finalSelectedScore }]);
+        
+        const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+        await supabase.from('users').update({ last_saved_date: today }).eq('username', currentUser.username);
+
+        alert(`บันทึกคะแนน ${finalSelectedScore} ของรอบที่ ${roundIndex} เรียบร้อยแล้ว!`);
+        
+        currentUser.hasSavedToday = true; 
+        gameState.scoreHistory = []; 
+        
+        switchScreen('menu-screen');
+    }
+</script>
+</body>
+</html>
