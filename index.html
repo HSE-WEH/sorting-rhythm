@@ -66,9 +66,10 @@
             padding: 12px 24px; font-family: 'Kanit'; font-weight: 600; font-size: 16px;
             border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s;
             background: var(--primary); color: white; margin: 8px; width: 220px;
+            box-shadow: 0 4px 6px rgba(5, 150, 105, 0.1);
         }
-        button:hover { transform: translateY(-2px); filter: brightness(1.05); }
-        button.btn-back { background: #94A3B8; margin-top: 15px;}
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(5, 150, 105, 0.15); filter: brightness(1.05); }
+        button.btn-back { background: #94A3B8; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 15px;}
         button.btn-back:hover { background: #64748B; }
         button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
         
@@ -173,7 +174,6 @@
         .btn-admin-clear:hover { background-color: #DC2626; }
         .btn-admin-add { background-color: #3B82F6; color: white; border: none; cursor: pointer; }
         .btn-admin-add:hover { background-color: #2563EB; }
-
     </style>
 </head>
 <body>
@@ -342,23 +342,27 @@
         </div>
     </div>
 
-    <div id="scoreboard-screen" class="screen">
+    <div id="scoreboard-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>🏆 กระดานคะแนนสะสม</h1>
-        <p style="margin-top: 0; color: #4B5563; font-size: 14px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก)</p>
-        <table class="howto-table" style="max-width: 600px; width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-            <thead>
-                <tr style="background-color: #F8FAFC; color: #4B5563;">
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center; width: 10%;">อันดับ</th>
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; width: 25%;">ชื่อผู้เล่น</th>
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; width: 40%;">Status วันนี้</th>
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right; width: 25%;">คะแนนรวมสะสม</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body">
-                <tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ไม่มีข้อมูลคะแนน</td></tr>
-            </tbody>
-        </table>
-        <button class="btn-back" onclick="switchScreen('menu-screen')">ย้อนกลับ</button>
+        <p style="margin-top: 0; color: #4B5563; font-size: 14px; margin-bottom: 15px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก สะสมได้ตั้งแต่วันนี้ ถึง30มิถุนายน2569 เวลา 17.00 น.)</p>
+        
+        <div style="width: 100%; max-width: 600px; overflow-y: auto; max-height: 380px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 20px;">
+            <table class="howto-table" style="width: 100%; border-collapse: collapse; margin: 0;">
+                <thead style="position: sticky; top: 0; z-index: 1;">
+                    <tr style="background-color: #F8FAFC; color: #4B5563;">
+                        <th style="border-bottom: 1px solid #E2E8F0; padding: 10px 12px; text-align: center; width: 10%;">อันดับ</th>
+                        <th style="border-bottom: 1px solid #E2E8F0; padding: 10px 12px; width: 25%;">ชื่อผู้เล่น</th>
+                        <th style="border-bottom: 1px solid #E2E8F0; padding: 10px 12px; width: 40%;">Status วันนี้</th>
+                        <th style="border-bottom: 1px solid #E2E8F0; padding: 10px 12px; text-align: right; width: 25%;">คะแนนรวมสะสม</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <tr><td colspan="4" style="text-align: center; border-bottom: 1px solid #E2E8F0; padding: 10px 12px;">ไม่มีข้อมูลคะแนน</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <button class="btn-back" onclick="switchScreen('menu-screen')" style="margin-top: 0;">ย้อนกลับ</button>
     </div>
 
     <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
@@ -399,6 +403,7 @@
 </div>
 
 <script>
+    // URL และ Key สำหรับเชื่อมต่อ Supabase
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
     
@@ -476,7 +481,7 @@
             timerEl.innerText = `⏳ รีเซ็ตใน ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
         
-        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน (เวลาไทย)
+        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน
         if(h === 0 && m === 0 && s === 0 && currentUser) {
             currentUser.energy = 2;
             currentUser.hasSavedToday = false;
@@ -571,6 +576,7 @@
         }
     }
 
+    // --- ส่วนแก้ไขชื่อเล่นและอัปเดตสถานะ (ฟีเจอร์ใหม่) ---
     async function editDisplayName() {
         let newName = prompt("ตั้งชื่อที่แสดงในกระดานคะแนนใหม่:", currentUser.display_name);
         if(newName && newName.trim() !== "") {
@@ -626,20 +632,23 @@
         document.getElementById('player-energy').innerText = currentUser.role === 'admin' ? '∞' : currentUser.energy;
         document.getElementById('admin-btn').style.display = currentUser.role === 'admin' ? 'block' : 'none';
         
+        // อัปเดตช่องสถานะ
         document.getElementById('status-input').value = currentUser.daily_status || '';
         document.getElementById('status-left').innerText = currentUser.status_updates_left;
     }
+    // ------------------------------------------
 
     async function showLeaderboard() {
         switchScreen('scoreboard-screen');
         const tbody = document.getElementById('leaderboard-body');
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border-bottom: 1px solid #E2E8F0; padding: 10px 12px;">กำลังโหลดข้อมูล...</td></tr>';
 
         try {
+            // ดึงคะแนนและสถานะประจำวันของแต่ละคนมาแสดง
             const { data, error } = await supabaseClient.from('scores').select('score, username, users(display_name, daily_status)');
 
             if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border-bottom: 1px solid #E2E8F0; padding: 10px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
                 return;
             }
 
@@ -655,21 +664,22 @@
                 aggregatedScores[row.username].totalScore += row.score;
             });
 
-            let sortedScores = Object.values(aggregatedScores).sort((a, b) => b.totalScore - a.totalScore).slice(0, 10);
+            // ดึง 100 อันดับแรก
+            let sortedScores = Object.values(aggregatedScores).sort((a, b) => b.totalScore - a.totalScore).slice(0, 100);
 
             tbody.innerHTML = sortedScores.map((player, index) => `
                 <tr>
-                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">${index + 1}</td>
-                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; font-weight: 600;">${player.displayName}</td>
-                    <td style="border: 1px solid #E2E8F0; padding: 0;">
+                    <td style="border-bottom: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">${index + 1}</td>
+                    <td style="border-bottom: 1px solid #E2E8F0; padding: 8px 12px; font-weight: 600;">${player.displayName}</td>
+                    <td style="border-bottom: 1px solid #E2E8F0; padding: 0;">
                         <div class="status-cell">${player.status}</div>
                     </td>
-                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right; font-weight: bold; color: var(--primary);">${player.totalScore.toLocaleString()}</td>
+                    <td style="border-bottom: 1px solid #E2E8F0; padding: 8px 12px; text-align: right; font-weight: bold; color: var(--primary);">${player.totalScore.toLocaleString()}</td>
                 </tr>
             `).join('');
 
         } catch(err) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ดึงข้อมูลล้มเหลว</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border-bottom: 1px solid #E2E8F0; padding: 10px 12px;">ดึงข้อมูลล้มเหลว</td></tr>';
         }
     }
 
@@ -759,6 +769,7 @@
         alert('ล้างข้อมูลกระดานคะแนนเรียบร้อยแล้ว!');
     }
     // --- สิ้นสุดส่วนหน้าควบคุมแอดมิน ---
+
 
     function showStartPopup() {
         if (currentUser.role !== 'admin' && currentUser.energy <= 0) return alert('พลังงานของคุณหมดแล้วสําหรับวันนี้! กรุณารอเวลาพลังงานรีเซ็ตตอนเที่ยงคืนครับ');
