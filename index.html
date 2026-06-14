@@ -38,41 +38,27 @@
         .active { display: flex; }
         
         .logo-title {
-            font-size: 42px;
-            font-weight: 800;
-            margin-bottom: 0;
-            margin-top: 0;
+            font-size: 42px; font-weight: 800; margin-bottom: 0; margin-top: 0;
             background: linear-gradient(90deg, #3B82F6, #10B981, #FBBF24, #EF4444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase; letter-spacing: 1px;
             animation: pulse-logo 1.5s infinite alternate;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
         }
         .logo-subtitle {
-            font-size: 22px;
-            color: #4B5563;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-size: 22px; color: #4B5563; margin-top: 5px; margin-bottom: 10px;
+            font-weight: 800; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
-        @keyframes pulse-logo {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
-        }
+        @keyframes pulse-logo { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
 
-        h1 { color: var(--primary); margin-bottom: 15px; font-size: 30px; text-shadow: 1px 1px 2px rgba(0,0,0,0.05); text-align: center; margin-top: 0; }
+        h1 { color: var(--primary); margin-bottom: 15px; font-size: 30px; text-align: center; margin-top: 0; }
         h2 { color: #4B5563; margin-bottom: 10px; font-size: 18px; text-align: center; margin-top: 10px; }
         
         .form-group { display: flex; flex-direction: column; margin-bottom: 10px; width: 300px; }
         .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #4B5563; }
         input { 
             padding: 10px 14px; border-radius: 10px; border: 2px solid #E2E8F0; 
-            font-family: 'Kanit'; width: 100%; box-sizing: border-box; font-size: 14px;
-            transition: border-color 0.2s;
+            font-family: 'Kanit'; width: 100%; box-sizing: border-box; font-size: 14px; transition: 0.2s;
         }
         input:focus { outline: none; border-color: var(--primary); }
         
@@ -80,14 +66,13 @@
             padding: 12px 24px; font-family: 'Kanit'; font-weight: 600; font-size: 16px;
             border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s;
             background: var(--primary); color: white; margin: 8px; width: 220px;
-            box-shadow: 0 4px 6px rgba(5, 150, 105, 0.1);
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(5, 150, 105, 0.15); filter: brightness(1.05); }
-        button.btn-back { background: #94A3B8; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 15px;}
+        button:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        button.btn-back { background: #94A3B8; margin-top: 15px;}
         button.btn-back:hover { background: #64748B; }
         button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
         
-        .menu-buttons { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: 15px; }
+        .menu-buttons { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: 5px; }
         
         .top-bar {
             position: absolute; top: 0; left: 0; width: 100%; padding: 15px 25px;
@@ -114,7 +99,6 @@
         .key-c { background: var(--green); } 
         .key-v { background: var(--red); }
         .key-b { background: var(--orange); }
-        
         .key-row-space { width: 100%; }
         .key-space {
             width: 100%; padding: 10px 0; border-radius: 12px; font-weight: bold; color: #4B5563;
@@ -156,6 +140,30 @@
         .admin-table th, .admin-table td { border-bottom: 1px solid #E2E8F0; padding: 10px 15px; }
         .admin-table th { background-color: #F8FAFC; color: #4B5563; font-weight: 600; position: sticky; top: 0; z-index: 1; }
         .admin-table tbody tr:hover { background-color: #F0FDF4; }
+        
+        /* ปุ่ม Re-record แก้ขนาดให้เล็กสมส่วน */
+        .btn-rerecord { width: auto; padding: 4px 10px; font-size: 12px; margin: 0; border-radius: 6px; background: #9CA3AF; color: white; border: none; }
+        .btn-rerecord.active { background: #F59E0B; cursor: pointer; }
+        .btn-rerecord.active:hover { background: #D97706; }
+
+        /* ช่องสถานะวันนี้ในหน้าเมนู */
+        .status-update-container {
+            display: flex; gap: 5px; align-items: center; margin-top: 15px; margin-bottom: 10px;
+            background: #F8FAFC; padding: 10px 15px; border-radius: 12px; border: 1px solid #E2E8F0; width: 100%; max-width: 450px;
+        }
+
+        /* ตารางช่อง Status ให้มี Scrollbar เล็ก ไม่ยืดตาราง */
+        .status-cell {
+            max-width: 160px; /* ฟิคความกว้าง */
+            overflow-x: auto;
+            white-space: nowrap;
+            color: #4B5563;
+        }
+        /* แต่ง Scrollbar เล็กๆ */
+        .status-cell::-webkit-scrollbar { height: 4px; }
+        .status-cell::-webkit-scrollbar-track { background: transparent; }
+        .status-cell::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        .status-cell::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
     </style>
 </head>
 <body>
@@ -225,19 +233,30 @@
 
     <div id="menu-screen" class="screen">
         <div class="top-bar">
-            <span id="player-name">Player</span>
+            <span>
+                <span id="player-name" style="font-weight: 800; color: #1E40AF;">Player</span>
+                <button onclick="editDisplayName()" style="padding: 2px 6px; font-size: 11px; width: auto; margin: 0 0 0 5px; background: #94A3B8; border-radius: 4px;">✏️ แก้ไขชื่อ</button>
+            </span>
             <span style="font-size: 14px; text-align: right;">
                 ⚡ พลังงาน: <span id="player-energy">2</span>/2<br>
                 <span id="energy-timer" style="color: #6B7280; font-size: 12px;">⏳ รีเซ็ตใน 00:00:00</span>
             </span>
         </div>
         <h1 class="logo-title" style="margin-top: 30px;">🎵 Sorting Rhythm</h1>
-        <div class="menu-buttons" style="margin-top: 30px;">
+        
+        <div class="status-update-container">
+            <span style="font-size: 20px;">💬</span>
+            <input type="text" id="status-input" placeholder="อัพเดทสถานะวันนี้..." style="width: 100%; margin: 0; padding: 6px 10px; font-size: 13px;">
+            <button onclick="updateStatus()" style="width: auto; margin: 0; padding: 6px 12px; font-size: 12px; white-space: nowrap;">เซฟ (<span id="status-left">2</span>)</button>
+            <button onclick="clearStatus()" style="width: auto; margin: 0; padding: 6px; font-size: 12px; background: #EF4444;" title="ลบสถานะ">🗑️</button>
+        </div>
+
+        <div class="menu-buttons">
             <button onclick="showStartPopup()" style="background: #10B981; font-size: 18px; padding: 14px 40px; width: 250px; border-radius: 16px;">▶ เริ่มต้นเล่นเกม</button>
             <button onclick="switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
             <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
             <button id="admin-btn" style="display:none; background: #8B5CF6; width: 250px;" onclick="showAdminPanel()">⚙️ แผงควบคุมแอดมิน</button>
-            <button onclick="logout()" class="btn-back" style="width: 250px; margin-top: 15px;">ออกจากระบบ</button>
+            <button onclick="logout()" class="btn-back" style="width: 250px; margin-top: 10px;">ออกจากระบบ</button>
         </div>
     </div>
 
@@ -316,16 +335,17 @@
     <div id="scoreboard-screen" class="screen">
         <h1>🏆 กระดานคะแนนสะสม</h1>
         <p style="margin-top: 0; color: #4B5563; font-size: 14px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก)</p>
-        <table class="howto-table" style="max-width: 500px; width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <table class="howto-table" style="max-width: 600px; width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <thead>
                 <tr style="background-color: #F8FAFC; color: #4B5563;">
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">อันดับ</th>
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px;">ชื่อผู้เล่น</th>
-                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">คะแนนรวมสะสม</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center; width: 10%;">อันดับ</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; width: 25%;">ชื่อผู้เล่น</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; width: 40%;">Status วันนี้</th>
+                    <th style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right; width: 25%;">คะแนนรวมสะสม</th>
                 </tr>
             </thead>
             <tbody id="leaderboard-body">
-                <tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ไม่มีข้อมูลคะแนน</td></tr>
+                <tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ไม่มีข้อมูลคะแนน</td></tr>
             </tbody>
         </table>
         <button class="btn-back" onclick="switchScreen('menu-screen')">ย้อนกลับ</button>
@@ -376,7 +396,6 @@
     
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ฟังก์ชันช่วยดึงวันที่ตามเวลาประเทศไทย (YYYY-MM-DD)
     function getTodayBKK() {
         const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
         const yyyy = d.getFullYear();
@@ -449,9 +468,16 @@
             timerEl.innerText = `⏳ รีเซ็ตใน ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
         
+        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน
         if(h === 0 && m === 0 && s === 0 && currentUser) {
             currentUser.energy = 2;
             currentUser.hasSavedToday = false;
+            currentUser.status_updates_left = 2;
+            currentUser.daily_status = '';
+            
+            if(currentUser.role !== 'admin') {
+                supabaseClient.from('users').update({ energy: 2, status_updates_left: 2, daily_status: '' }).eq('username', currentUser.username);
+            }
             if(document.getElementById('menu-screen').classList.contains('active')) updateMenuUI();
         }
     }
@@ -470,9 +496,8 @@
         
         if (!u || !p) return alert('กรุณากรอก Username และ Password');
 
-        // บัญชี Admin สำรองแบบ Bypass
         if (u === 'admin' && p === 'adminhse') {
-            currentUser = { display_name: 'Admin HSE', username: 'admin', energy: 999, role: 'admin', hasSavedToday: false };
+            currentUser = { display_name: 'Admin HSE', username: 'admin', energy: 999, role: 'admin', hasSavedToday: false, status_updates_left: 2, daily_status: '' };
             updateMenuUI();
             switchScreen('menu-screen');
             return;
@@ -481,13 +506,15 @@
         try {
             const { data, error } = await supabaseClient.from('users').select('*').eq('username', u).eq('password', p).single();
 
-            if (error || !data) {
-                return alert('Username หรือ Password ไม่ถูกต้อง!');
-            }
+            if (error || !data) return alert('Username หรือ Password ไม่ถูกต้อง!');
 
             currentUser = data;
             const today = getTodayBKK();
             currentUser.hasSavedToday = (currentUser.last_saved_date === today);
+
+            // เซ็ตค่าเริ่มต้นถ้าฐานข้อมูลเป็น null
+            if(currentUser.status_updates_left === null || currentUser.status_updates_left === undefined) currentUser.status_updates_left = 2;
+            if(!currentUser.daily_status) currentUser.daily_status = '';
 
             updateMenuUI();
             switchScreen('menu-screen');
@@ -536,16 +563,79 @@
         }
     }
 
+    // --- ส่วนแก้ไขชื่อเล่นและอัปเดตสถานะ (ฟีเจอร์ใหม่) ---
+    async function editDisplayName() {
+        let newName = prompt("ตั้งชื่อที่แสดงในกระดานคะแนนใหม่:", currentUser.display_name);
+        if(newName && newName.trim() !== "") {
+            try {
+                if(currentUser.role !== 'admin') {
+                    const { error } = await supabaseClient.from('users').update({ display_name: newName }).eq('username', currentUser.username);
+                    if(error) throw error;
+                }
+                currentUser.display_name = newName;
+                updateMenuUI();
+                alert("เปลี่ยนชื่อสำเร็จ!");
+            } catch(err) {
+                alert("เปลี่ยนชื่อไม่สำเร็จ: " + err.message);
+            }
+        }
+    }
+
+    async function updateStatus() {
+        let text = document.getElementById('status-input').value;
+        if(currentUser.status_updates_left <= 0) return alert("คุณอัพเดทสถานะครบโควต้า 2 ครั้งแล้วสำหรับวันนี้!");
+        
+        let newLeft = currentUser.status_updates_left - 1;
+        try {
+            if(currentUser.role !== 'admin') {
+                const { error } = await supabaseClient.from('users').update({ daily_status: text, status_updates_left: newLeft }).eq('username', currentUser.username);
+                if(error) throw error;
+            }
+            currentUser.daily_status = text;
+            currentUser.status_updates_left = newLeft;
+            updateMenuUI();
+            alert("อัพเดทสถานะสำเร็จ!");
+        } catch(err) {
+            alert("อัพเดทสถานะไม่สำเร็จ: " + err.message);
+        }
+    }
+
+    async function clearStatus() {
+        if(!confirm("ต้องการลบสถานะใช่หรือไม่? (การลบจะไม่เสียโควต้า)")) return;
+        try {
+            if(currentUser.role !== 'admin') {
+                await supabaseClient.from('users').update({ daily_status: '' }).eq('username', currentUser.username);
+            }
+            currentUser.daily_status = '';
+            document.getElementById('status-input').value = '';
+            updateMenuUI();
+        } catch(err) {
+            alert("ลบไม่สำเร็จ");
+        }
+    }
+
+    function updateMenuUI() {
+        document.getElementById('player-name').innerText = currentUser.display_name;
+        document.getElementById('player-energy').innerText = currentUser.role === 'admin' ? '∞' : currentUser.energy;
+        document.getElementById('admin-btn').style.display = currentUser.role === 'admin' ? 'block' : 'none';
+        
+        // อัปเดตช่องสถานะ
+        document.getElementById('status-input').value = currentUser.daily_status || '';
+        document.getElementById('status-left').innerText = currentUser.status_updates_left;
+    }
+    // ------------------------------------------
+
     async function showLeaderboard() {
         switchScreen('scoreboard-screen');
         const tbody = document.getElementById('leaderboard-body');
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
 
         try {
-            const { data, error } = await supabaseClient.from('scores').select('score, username, users(display_name)');
+            // ดึงคะแนนและสถานะประจำวันของแต่ละคนมาแสดง
+            const { data, error } = await supabaseClient.from('scores').select('score, username, users(display_name, daily_status)');
 
             if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
                 return;
             }
 
@@ -554,6 +644,7 @@
                 if (!aggregatedScores[row.username]) {
                     aggregatedScores[row.username] = {
                         displayName: row.users ? row.users.display_name : row.username,
+                        status: row.users ? (row.users.daily_status || '') : '',
                         totalScore: 0
                     };
                 }
@@ -565,13 +656,16 @@
             tbody.innerHTML = sortedScores.map((player, index) => `
                 <tr>
                     <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">${index + 1}</td>
-                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px;">${player.displayName}</td>
+                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; font-weight: 600;">${player.displayName}</td>
+                    <td style="border: 1px solid #E2E8F0; padding: 0;">
+                        <div class="status-cell">${player.status}</div>
+                    </td>
                     <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right; font-weight: bold; color: var(--primary);">${player.totalScore.toLocaleString()}</td>
                 </tr>
             `).join('');
 
         } catch(err) {
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ดึงข้อมูลล้มเหลว</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ดึงข้อมูลล้มเหลว</td></tr>';
         }
     }
 
@@ -609,7 +703,7 @@
                         ${isRecorded ? '✅ Recorded' : '⏳ รอเล่น'}
                     </td>
                     <td style="text-align: center;">
-                        <button onclick="allowReRecord('${user.username}', '${user.display_name}')" ${!isRecorded ? 'disabled' : 'style="background: #F59E0B;"'} style="width: auto; padding: 4px 8px; font-size: 12px; margin: 0;">Re-record</button>
+                        <button onclick="allowReRecord('${user.username}', '${user.display_name}')" class="btn-rerecord ${isRecorded ? 'active' : ''}" ${!isRecorded ? 'disabled' : ''}>Re-record</button>
                     </td>
                 </tr>
                 `;
@@ -645,12 +739,6 @@
     }
     // --- สิ้นสุดส่วนหน้าควบคุมแอดมิน ---
 
-
-    function updateMenuUI() {
-        document.getElementById('player-name').innerText = currentUser.display_name;
-        document.getElementById('player-energy').innerText = currentUser.role === 'admin' ? '∞' : currentUser.energy;
-        document.getElementById('admin-btn').style.display = currentUser.role === 'admin' ? 'block' : 'none';
-    }
 
     function showStartPopup() {
         if (currentUser.role !== 'admin' && currentUser.energy <= 0) return alert('พลังงานของคุณหมดแล้วสําหรับวันนี้! กรุณารอเวลาพลังงานรีเซ็ตตอนเที่ยงคืนครับ');
@@ -918,10 +1006,11 @@
         let finalSelectedScore = gameState.scoreHistory[roundIndex - 1];
         
         try {
-            await supabaseClient.from('scores').insert([{ username: currentUser.username, score: finalSelectedScore }]);
-            const today = getTodayBKK();
-            await supabaseClient.from('users').update({ last_saved_date: today }).eq('username', currentUser.username);
-
+            if(currentUser.role !== 'admin') {
+                await supabaseClient.from('scores').insert([{ username: currentUser.username, score: finalSelectedScore }]);
+                const today = getTodayBKK();
+                await supabaseClient.from('users').update({ last_saved_date: today }).eq('username', currentUser.username);
+            }
             alert(`บันทึกคะแนน ${finalSelectedScore} ของรอบที่ ${roundIndex} เรียบร้อยแล้ว!`);
             
             currentUser.hasSavedToday = true; 
