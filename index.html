@@ -348,8 +348,8 @@
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
     
-    // สร้าง Supabase Client
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // สร้าง Supabase Client ที่ถูกต้อง (ใช้ window.supabase เพื่อป้องกันปัญหา TDZ)
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const trashes = [
         { id: 1, emoji: '🍬', key: 'z', name: 'ซองขนม' }, { id: 2, emoji: '🛍️', key: 'z', name: 'ถุงพลาสติก' }, { id: 3, emoji: '🥣', key: 'z', name: 'กล่องพลาสติก' },
@@ -360,31 +360,26 @@
     ];
 
     function getRoundConfig(index) {
-        // Stage 1 (Normal = 16s, Blind = 12s)
         if (index === 0) return { label: '1', count: 3, time: 16.0, blind: false };
         if (index === 1) return { label: '1', count: 3, time: 16.0, blind: false };
         if (index === 2) return { label: '1', count: 4, time: 16.0, blind: false };
         if (index === 3) return { label: '1 (Blind)', count: 4, time: 12.0, blind: true };
         
-        // Stage 2 (Normal = 14s, Blind = 11s)
         if (index === 4) return { label: '2', count: 4, time: 14.0, blind: false };
         if (index === 5) return { label: '2', count: 4, time: 14.0, blind: false };
         if (index === 6) return { label: '2', count: 4, time: 14.0, blind: false };
         if (index === 7) return { label: '2 (Blind)', count: 4, time: 11.0, blind: true };
 
-        // Stage 3 (Normal = 12s, Blind = 10s)
         if (index === 8) return { label: '3', count: 4, time: 12.0, blind: false };
         if (index === 9) return { label: '3', count: 5, time: 12.0, blind: false };
         if (index === 10) return { label: '3', count: 5, time: 12.0, blind: false };
         if (index === 11) return { label: '3 (Blind)', count: 5, time: 10.0, blind: true };
 
-        // Final Stage เริ่มต้น (Normal = 10s, Blind = 9s)
         if (index === 12) return { label: 'Final', count: 5, time: 10.0, blind: false };
         if (index === 13) return { label: 'Final', count: 5, time: 10.0, blind: false };
         if (index === 14) return { label: 'Final', count: 5, time: 10.0, blind: false };
         if (index === 15) return { label: 'Final (Blind)', count: 5, time: 9.0, blind: true };
 
-        // Final Stage วนลูปไม่รู้จบ
         let loopIndex = (index - 16) % 4;
         if (loopIndex < 3) {
             return { label: 'Final', count: 6, time: 10.0, blind: false };
@@ -441,20 +436,23 @@
         
         if (!u || !p) return alert('กรุณากรอก Username และ Password');
 
-        // ดึงข้อมูลจริงจาก Supabase
-        const { data, error } = await supabase.from('users').select('*').eq('username', u).eq('password', p).single();
+        try {
+            const { data, error } = await supabaseClient.from('users').select('*').eq('username', u).eq('password', p).single();
 
-        if (error || !data) {
-            return alert('Username หรือ Password ไม่ถูกต้อง!');
+            if (error || !data) {
+                return alert('Username หรือ Password ไม่ถูกต้อง!');
+            }
+
+            currentUser = data;
+            
+            const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+            currentUser.hasSavedToday = (currentUser.last_saved_date === today);
+
+            updateMenuUI();
+            switchScreen('menu-screen');
+        } catch (err) {
+            alert('ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ' + err.message);
         }
-
-        currentUser = data;
-        
-        const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
-        currentUser.hasSavedToday = (currentUser.last_saved_date === today);
-
-        updateMenuUI();
-        switchScreen('menu-screen');
     }
 
     function logout() { 
@@ -475,23 +473,26 @@
         if (!display || !fullname || !dept || !user || !pass || !confirm) return alert('กรุณากรอกข้อมูลให้ครบทุกช่องก่อนยืนยัน');
         if (pass !== confirm) return alert('รหัสผ่านและช่องยืนยันรหัสผ่านไม่ตรงกัน');
 
-        // ส่งข้อมูลเข้า Supabase
-        const { data, error } = await supabase.from('users').insert([
-            { display_name: display, full_name: fullname, department: dept, username: user, password: pass }
-        ]);
+        try {
+            const { data, error } = await supabaseClient.from('users').insert([
+                { display_name: display, full_name: fullname, department: dept, username: user, password: pass }
+            ]);
 
-        if (error) {
-            if(error.code === '23505') alert('Username หรือ Display Name นี้มีคนใช้แล้ว กรุณาเปลี่ยนใหม่');
-            else alert('เกิดข้อผิดพลาด: ' + error.message);
-            return;
+            if (error) {
+                if(error.code === '23505') alert('Username หรือ Display Name นี้มีคนใช้แล้ว กรุณาเปลี่ยนใหม่');
+                else alert('เกิดข้อผิดพลาด: ' + error.message);
+                return;
+            }
+
+            alert('สมัครสมาชิกสำเร็จเรียบร้อยแล้ว!');
+            switchScreen('login-screen');
+            
+            document.getElementById('reg-display').value = ''; document.getElementById('reg-fullname').value = '';
+            document.getElementById('reg-dept').value = ''; document.getElementById('reg-user').value = '';
+            document.getElementById('reg-pass').value = ''; document.getElementById('reg-confirm').value = '';
+        } catch (err) {
+            alert('ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ' + err.message);
         }
-
-        alert('สมัครสมาชิกสำเร็จเรียบร้อยแล้ว!');
-        switchScreen('login-screen');
-        
-        document.getElementById('reg-display').value = ''; document.getElementById('reg-fullname').value = '';
-        document.getElementById('reg-dept').value = ''; document.getElementById('reg-user').value = '';
-        document.getElementById('reg-pass').value = ''; document.getElementById('reg-confirm').value = '';
     }
 
     async function showLeaderboard() {
@@ -499,27 +500,30 @@
         const tbody = document.getElementById('leaderboard-body');
         tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
 
-        // ดึงข้อมูล 10 อันดับแรกจาก Database
-        const { data, error } = await supabase
-            .from('scores')
-            .select(`score, username, users(display_name)`)
-            .order('score', { ascending: false })
-            .limit(10);
+        try {
+            const { data, error } = await supabaseClient
+                .from('scores')
+                .select(`score, username, users(display_name)`)
+                .order('score', { ascending: false })
+                .limit(10);
 
-        if (error || !data || data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
-            return;
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ยังไม่มีข้อมูลคะแนน</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map((row, index) => {
+                let dName = row.users ? row.users.display_name : row.username;
+                return `
+                <tr>
+                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">${index + 1}</td>
+                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px;">${dName}</td>
+                    <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">${row.score}</td>
+                </tr>
+            `}).join('');
+        } catch(err) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">ดึงข้อมูลล้มเหลว</td></tr>';
         }
-
-        tbody.innerHTML = data.map((row, index) => {
-            let dName = row.users ? row.users.display_name : row.username;
-            return `
-            <tr>
-                <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: center;">${index + 1}</td>
-                <td style="border: 1px solid #E2E8F0; padding: 8px 12px;">${dName}</td>
-                <td style="border: 1px solid #E2E8F0; padding: 8px 12px; text-align: right;">${row.score}</td>
-            </tr>
-        `}).join('');
     }
 
     function updateMenuUI() {
@@ -538,8 +542,7 @@
         
         if (currentUser.role !== 'admin') {
             currentUser.energy--;
-            // ลดพลังงานใน Database จริง
-            await supabase.from('users').update({ energy: currentUser.energy }).eq('username', currentUser.username);
+            await supabaseClient.from('users').update({ energy: currentUser.energy }).eq('username', currentUser.username);
         }
         updateMenuUI();
 
@@ -794,18 +797,20 @@
 
         let finalSelectedScore = gameState.scoreHistory[roundIndex - 1];
         
-        // บันทึกคะแนนลง Supabase ของจริง
-        await supabase.from('scores').insert([{ username: currentUser.username, score: finalSelectedScore }]);
-        
-        const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
-        await supabase.from('users').update({ last_saved_date: today }).eq('username', currentUser.username);
+        try {
+            await supabaseClient.from('scores').insert([{ username: currentUser.username, score: finalSelectedScore }]);
+            const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+            await supabaseClient.from('users').update({ last_saved_date: today }).eq('username', currentUser.username);
 
-        alert(`บันทึกคะแนน ${finalSelectedScore} ของรอบที่ ${roundIndex} เรียบร้อยแล้ว!`);
-        
-        currentUser.hasSavedToday = true; 
-        gameState.scoreHistory = []; 
-        
-        switchScreen('menu-screen');
+            alert(`บันทึกคะแนน ${finalSelectedScore} ของรอบที่ ${roundIndex} เรียบร้อยแล้ว!`);
+            
+            currentUser.hasSavedToday = true; 
+            gameState.scoreHistory = []; 
+            
+            switchScreen('menu-screen');
+        } catch(err) {
+            alert('ไม่สามารถบันทึกคะแนนได้: ' + err.message);
+        }
     }
 </script>
 </body>
