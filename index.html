@@ -61,9 +61,9 @@
             font-family: 'Kanit'; width: 100%; box-sizing: border-box; font-size: 14px; transition: 0.2s;
         }
         input:focus { outline: none; border-color: var(--primary); }
-        
-        input[type="range"] { accent-color: var(--primary); cursor: pointer; }
 
+        input[type="range"] { accent-color: var(--primary); cursor: pointer; }
+        
         button {
             padding: 12px 24px; font-family: 'Kanit'; font-weight: 600; font-size: 16px;
             border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s;
@@ -171,7 +171,7 @@
         .btn-admin-add { background-color: #3B82F6; color: white; border: none; cursor: pointer; }
         .btn-admin-add:hover { background-color: #2563EB; }
 
-        /* สไตล์สำหรับกล่องตั้งค่าเสียง */
+        /* สไตล์หน้าต่างตั้งค่าเสียง */
         .settings-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .settings-label { font-weight: 600; color: #4B5563; }
         .settings-control { display: flex; align-items: center; gap: 10px; }
@@ -193,6 +193,7 @@
         </div>
     </div>
 
+    <!-- หน้า Login -->
     <div id="login-screen" class="screen active">
         <h1 class="logo-title">🎵 Sorting Rhythm</h1>
         <h2 class="logo-subtitle">ศึกคัดขยะห้าสี จังหวะขยี้ใจ</h2>
@@ -211,6 +212,7 @@
         </div>
     </div>
 
+    <!-- หน้า สมัครสมาชิก -->
     <div id="register-screen" class="screen">
         <h1 class="logo-title" style="font-size: 28px;">📝 สมัครสมาชิก</h1>
         <div class="form-group" style="margin-top: 15px;">
@@ -243,6 +245,7 @@
         </div>
     </div>
 
+    <!-- หน้า เมนูหลัก -->
     <div id="menu-screen" class="screen">
         <div class="top-bar">
             <span>
@@ -250,11 +253,13 @@
                 <button onclick="editDisplayName()" style="padding: 2px 6px; font-size: 11px; width: auto; margin: 0 0 0 5px; background: #94A3B8; border-radius: 4px;">✏️ แก้ไขชื่อ</button>
             </span>
             <span style="font-size: 14px; text-align: right; display: flex; align-items: center;">
-                <div>
+                <div style="text-align: right;">
                     ⚡ พลังงาน: <span id="player-energy">2</span>/2<br>
                     <span id="energy-timer" style="color: #6B7280; font-size: 12px;">⏳ รีเซ็ตใน 00:00:00</span>
                 </div>
-                <button id="mute-btn" onclick="toggleMute()" style="padding: 4px 8px; font-size: 12px; width: auto; margin: 0 0 0 10px; background: #374151; border-radius: 8px;">🔊 เสียง</button>
+                <!-- เพิ่มปุ่มฟันเฟืองสำหรับตั้งค่าเสียง ข้างๆ ปุ่มเปิด/ปิดเสียง -->
+                <button id="mute-btn" onclick="toggleMute()" style="padding: 4px 8px; font-size: 12px; width: auto; margin: 0 0 0 10px; background: #EF4444; border-radius: 8px;">🔇 ปิดเสียง</button>
+                <button onclick="playClickSound(); switchScreen('settings-screen')" style="padding: 4px 8px; font-size: 12px; width: auto; margin: 0 0 0 5px; background: #8B5CF6; border-radius: 8px;" title="ตั้งค่าระดับเสียง">⚙️</button>
             </span>
         </div>
         <h1 class="logo-title" style="margin-top: 30px;">🎵 Sorting Rhythm</h1>
@@ -271,12 +276,14 @@
             <button id="btn-resume-save" onclick="showResultScreen()" style="display:none; background: #F59E0B; font-size: 16px; padding: 10px 40px; width: 250px; border-radius: 12px; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);">💾 บันทึกคะแนนที่ค้างอยู่</button>
             <button onclick="playClickSound(); switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
             <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
+            <!-- ปุ่มตั้งค่าเสียง ในเมนูหลักด้วย -->
             <button onclick="playClickSound(); switchScreen('settings-screen')" style="background: #8B5CF6; width: 250px;">⚙️ ตั้งค่าระดับเสียง</button>
             <button id="admin-btn" style="display:none; background: #4B5563; width: 250px;" onclick="showAdminPanel()">🛠️ แผงควบคุมแอดมิน</button>
             <button onclick="logout()" class="btn-back" style="width: 250px; margin-top: 10px;">ออกจากระบบ</button>
         </div>
     </div>
 
+    <!-- หน้า ตั้งค่าระดับเสียง -->
     <div id="settings-screen" class="screen">
         <h1 style="margin-bottom: 20px; font-size: 32px;">⚙️ ตั้งค่าระดับเสียง</h1>
         <div style="background: #F8FAFC; padding: 25px; border-radius: 20px; border: 2px dashed #CBD5E1; width: 100%; max-width: 450px;">
@@ -317,6 +324,7 @@
         <button class="btn-back" onclick="playClickSound(); switchScreen('menu-screen')" style="width: 250px; margin-top: 25px;">ย้อนกลับ</button>
     </div>
 
+    <!-- หน้า วิธีการเล่น -->
     <div id="howto-screen" class="screen">
         <h1>📖 วิธีการเล่นเบื้องต้น</h1>
         <div class="howto-desc">
@@ -361,6 +369,7 @@
         <button class="btn-back" onclick="playClickSound(); switchScreen('menu-screen')" style="width: 250px; margin-top: 10px;">ย้อนกลับ</button>
     </div>
 
+    <!-- หน้าเล่นเกม -->
     <div id="game-screen" class="screen">
         <div class="top-bar">
             <span>Stage: <span id="ui-stage">1</span></span>
@@ -389,6 +398,7 @@
         </div>
     </div>
 
+    <!-- หน้า กระดานคะแนน -->
     <div id="scoreboard-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>🏆 กระดานคะแนนสะสม</h1>
         <p style="margin-top: 0; color: #4B5563; font-size: 14px; margin-bottom: 15px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก)</p>
@@ -412,6 +422,7 @@
         <button class="btn-back" onclick="playClickSound(); switchScreen('menu-screen')" style="margin-top: 0;">ย้อนกลับ</button>
     </div>
 
+    <!-- หน้า แอดมิน -->
     <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>🛠️ แผงควบคุมระบบ (Admin)</h1>
         
@@ -437,6 +448,7 @@
         </div>
     </div>
 
+    <!-- หน้าจบเกมและเลือกเซฟคะแนน -->
     <div id="result-screen" class="screen">
         <h1 style="color: #EF4444; font-size: 34px;">🎮 จบเกมการเล่น!</h1>
         <h2 style="font-size: 26px; margin-bottom: 5px;">คะแนนรอบล่าสุด: <span id="final-score" style="color: var(--primary);">0</span></h2>
@@ -451,7 +463,7 @@
 </div>
 
 <script>
-    // --- ตั้งค่าระบบระดับเสียง (Volume Settings) ---
+    // --- ตั้งค่าระบบเสียง ---
     let soundVolumes = { bgm: 5, correct: 5, badMiss: 5, click: 5 };
 
     // ดึงค่าเสียงจาก LocalStorage (ถ้าเคยปรับไว้)
@@ -485,7 +497,7 @@
 
     // ฟังก์ชันคำนวณและประยุกต์ใช้ระดับเสียง (5 คือ 100% ต้นฉบับ)
     function applyVolumes() {
-        bgm.volume = (soundVolumes.bgm / 5) * 0.4;  // เสียง bgm ปกติให้เบาหน่อย (0.4) จะได้ไม่กลบ sfx
+        bgm.volume = (soundVolumes.bgm / 5) * 0.4;  
         sfxCorrect.volume = (soundVolumes.correct / 5) * 1.0;
         sfxBad.volume = (soundVolumes.badMiss / 5) * 1.0;
         sfxWrong.volume = (soundVolumes.badMiss / 5) * 1.0;
