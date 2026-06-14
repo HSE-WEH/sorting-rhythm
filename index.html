@@ -173,7 +173,6 @@
         </div>
     </div>
 
-    <!-- หน้า Login -->
     <div id="login-screen" class="screen active">
         <h1 class="logo-title">🎵 Sorting Rhythm</h1>
         <h2 class="logo-subtitle">ศึกคัดขยะห้าสี จังหวะขยี้ใจ</h2>
@@ -192,7 +191,6 @@
         </div>
     </div>
 
-    <!-- หน้า สมัครสมาชิก -->
     <div id="register-screen" class="screen">
         <h1 class="logo-title" style="font-size: 28px;">📝 สมัครสมาชิก</h1>
         <div class="form-group" style="margin-top: 15px;">
@@ -225,7 +223,6 @@
         </div>
     </div>
 
-    <!-- หน้า เมนูหลัก -->
     <div id="menu-screen" class="screen">
         <div class="top-bar">
             <span id="player-name">Player</span>
@@ -244,7 +241,6 @@
         </div>
     </div>
 
-    <!-- หน้า วิธีการเล่น -->
     <div id="howto-screen" class="screen">
         <h1>📖 วิธีการเล่นเบื้องต้น</h1>
         <div class="howto-desc">
@@ -289,7 +285,6 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')" style="width: 250px; margin-top: 10px;">ย้อนกลับ</button>
     </div>
 
-    <!-- หน้าเล่นเกม -->
     <div id="game-screen" class="screen">
         <div class="top-bar">
             <span>Stage: <span id="ui-stage">1</span></span>
@@ -318,7 +313,6 @@
         </div>
     </div>
 
-    <!-- หน้า กระดานคะแนน -->
     <div id="scoreboard-screen" class="screen">
         <h1>🏆 กระดานคะแนนสะสม</h1>
         <p style="margin-top: 0; color: #4B5563; font-size: 14px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก)</p>
@@ -337,7 +331,6 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')">ย้อนกลับ</button>
     </div>
 
-    <!-- หน้า แอดมิน (อัปเดตใหม่) -->
     <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>⚙️ แผงควบคุมระบบ (Admin)</h1>
         
@@ -364,7 +357,6 @@
         </div>
     </div>
 
-    <!-- หน้าจบเกม -->
     <div id="result-screen" class="screen">
         <h1 style="color: #EF4444; font-size: 34px;">🎮 จบเกมการเล่น!</h1>
         <h2 style="font-size: 26px;">คะแนนรอบนี้ของคุณ: <span id="final-score" style="color: var(--primary);">0</span></h2>
@@ -382,8 +374,16 @@
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
     
-    // สร้าง Supabase Client ที่ถูกต้อง
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ฟังก์ชันช่วยดึงวันที่ตามเวลาประเทศไทย (YYYY-MM-DD)
+    function getTodayBKK() {
+        const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
 
     const trashes = [
         { id: 1, emoji: '🍬', key: 'z', name: 'ซองขนม' }, { id: 2, emoji: '🛍️', key: 'z', name: 'ถุงพลาสติก' }, { id: 3, emoji: '🥣', key: 'z', name: 'กล่องพลาสติก' },
@@ -486,7 +486,7 @@
             }
 
             currentUser = data;
-            const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+            const today = getTodayBKK();
             currentUser.hasSavedToday = (currentUser.last_saved_date === today);
 
             updateMenuUI();
@@ -536,14 +536,12 @@
         }
     }
 
-    // ฟังก์ชันคำนวณและแสดงกระดานคะแนนแบบบวกสะสม
     async function showLeaderboard() {
         switchScreen('scoreboard-screen');
         const tbody = document.getElementById('leaderboard-body');
         tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; border: 1px solid #E2E8F0; padding: 8px 12px;">กำลังโหลดข้อมูล...</td></tr>';
 
         try {
-            // ดึงคะแนนทั้งหมดมาเพื่อนำมาหาผลรวม
             const { data, error } = await supabaseClient.from('scores').select('score, username, users(display_name)');
 
             if (error || !data || data.length === 0) {
@@ -551,7 +549,6 @@
                 return;
             }
 
-            // คำนวณผลรวมคะแนนของแต่ละ User
             let aggregatedScores = {};
             data.forEach(row => {
                 if (!aggregatedScores[row.username]) {
@@ -563,7 +560,6 @@
                 aggregatedScores[row.username].totalScore += row.score;
             });
 
-            // เรียงลำดับจากมากไปน้อย และดึง 10 อันดับแรก
             let sortedScores = Object.values(aggregatedScores).sort((a, b) => b.totalScore - a.totalScore).slice(0, 10);
 
             tbody.innerHTML = sortedScores.map((player, index) => `
@@ -590,7 +586,6 @@
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px;">กำลังโหลดข้อมูลผู้เล่น...</td></tr>';
 
         try {
-            // ดึงข้อมูล User ทั้งหมดที่ไม่ใช่ Admin
             const { data, error } = await supabaseClient.from('users').select('*').neq('role', 'admin').order('display_name', { ascending: true });
 
             if (error || !data || data.length === 0) {
@@ -598,7 +593,7 @@
                 return;
             }
 
-            const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+            const today = getTodayBKK();
 
             tbody.innerHTML = data.map(user => {
                 const isRecorded = user.last_saved_date === today;
@@ -637,7 +632,6 @@
     async function allowReRecord(username, display_name) {
         if (!confirm(`ต้องการเปิดให้คุณ ${display_name} กลับไปเล่นและบันทึกคะแนนใหม่ของวันนี้ ใช่หรือไม่?`)) return;
 
-        // ล้างวันที่บันทึกล่าสุดออก ทำให้สถานะกลับมาเป็นรอเล่น
         await supabaseClient.from('users').update({ last_saved_date: null }).eq('username', username);
         alert('ปลดล็อกให้บันทึกคะแนนรอบใหม่ได้สำเร็จ!');
         loadAdminData();
@@ -646,7 +640,6 @@
     async function clearLeaderboard() {
         if (!confirm('⚠️ คำเตือน: คุณต้องการล้างข้อมูลกระดานคะแนนสะสมทั้งหมดใช่หรือไม่? การกระทำนี้ไม่สามารถกู้คืนได้!')) return;
         
-        // ลบข้อมูลทั้งหมดจากตาราง scores
         await supabaseClient.from('scores').delete().gt('score', -1);
         alert('ล้างข้อมูลกระดานคะแนนเรียบร้อยแล้ว!');
     }
@@ -926,7 +919,7 @@
         
         try {
             await supabaseClient.from('scores').insert([{ username: currentUser.username, score: finalSelectedScore }]);
-            const today = new Date().toLocaleDateString("en-US", {timeZone: "Asia/Bangkok"});
+            const today = getTodayBKK();
             await supabaseClient.from('users').update({ last_saved_date: today }).eq('username', currentUser.username);
 
             alert(`บันทึกคะแนน ${finalSelectedScore} ของรอบที่ ${roundIndex} เรียบร้อยแล้ว!`);
