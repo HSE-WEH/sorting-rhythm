@@ -191,6 +191,7 @@
         </div>
     </div>
 
+    <!-- หน้า Login -->
     <div id="login-screen" class="screen active">
         <h1 class="logo-title">🎵 Sorting Rhythm</h1>
         <h2 class="logo-subtitle">ศึกคัดขยะห้าสี จังหวะขยี้ใจ</h2>
@@ -209,6 +210,7 @@
         </div>
     </div>
 
+    <!-- หน้า สมัครสมาชิก -->
     <div id="register-screen" class="screen">
         <h1 class="logo-title" style="font-size: 28px;">📝 สมัครสมาชิก</h1>
         <div class="form-group" style="margin-top: 15px;">
@@ -241,6 +243,7 @@
         </div>
     </div>
 
+    <!-- หน้า เมนูหลัก -->
     <div id="menu-screen" class="screen">
         <div class="top-bar">
             <span>
@@ -263,6 +266,10 @@
 
         <div class="menu-buttons">
             <button onclick="showStartPopup()" style="background: #10B981; font-size: 18px; padding: 14px 40px; width: 250px; border-radius: 16px;">▶ เริ่มต้นเล่นเกม</button>
+            
+            <!-- ปุ่มดึงคะแนนเก่าขึ้นมาเซฟ (จะแสดงก็ต่อเมื่อมีคะแนนค้างและยังไม่ได้เซฟวันนี้) -->
+            <button id="btn-resume-save" onclick="showResultScreen()" style="display:none; background: #F59E0B; font-size: 16px; padding: 10px 40px; width: 250px; border-radius: 12px; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);">💾 บันทึกคะแนนที่ค้างอยู่</button>
+            
             <button onclick="switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
             <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
             <button id="admin-btn" style="display:none; background: #8B5CF6; width: 250px;" onclick="showAdminPanel()">⚙️ แผงควบคุมแอดมิน</button>
@@ -270,6 +277,7 @@
         </div>
     </div>
 
+    <!-- หน้า วิธีการเล่น -->
     <div id="howto-screen" class="screen">
         <h1>📖 วิธีการเล่นเบื้องต้น</h1>
         <div class="howto-desc">
@@ -303,7 +311,7 @@
             <div class="guide-card"><span class="emoji">🍎</span><div class="info"><span class="title">ผัก/ผลไม้</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
             
             <div class="guide-card"><span class="emoji">🐟</span><div class="info"><span class="title">ก้างปลา</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
-            <div class="guide-card"><span class="emoji">🦴</span><div class="info"><span class="title">กระดูก</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
+            <div class="guide-card"><span class="emoji">🦴</span><div class="info"><span class="title">กระดูกไก่</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
             <div class="guide-card"><span class="emoji">😷</span><div class="info"><span class="title">หน้ากากอนามัย</span><span style="color:#EA580C">B - ขยะติดเชื้อ</span></div></div>
             
             <div class="guide-card"><span class="emoji">🩹</span><div class="info"><span class="title">พลาสเตอร์</span><span style="color:#EA580C">B - ขยะติดเชื้อ</span></div></div>
@@ -314,6 +322,7 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')" style="width: 250px; margin-top: 10px;">ย้อนกลับ</button>
     </div>
 
+    <!-- หน้าเล่นเกม -->
     <div id="game-screen" class="screen">
         <div class="top-bar">
             <span>Stage: <span id="ui-stage">1</span></span>
@@ -342,9 +351,10 @@
         </div>
     </div>
 
+    <!-- หน้า กระดานคะแนน -->
     <div id="scoreboard-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>🏆 กระดานคะแนนสะสม</h1>
-        <p style="margin-top: 0; color: #4B5563; font-size: 14px; margin-bottom: 15px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก สะสมได้ตั้งแต่วันนี้ ถึง30มิถุนายน2569 เวลา 17.00 น.)</p>
+        <p style="margin-top: 0; color: #4B5563; font-size: 14px; margin-bottom: 15px;">(คะแนนจะถูกนำไปบวกสะสมในทุกๆ ครั้งที่บันทึก)</p>
         
         <div style="width: 100%; max-width: 600px; overflow-y: auto; max-height: 380px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 20px;">
             <table class="howto-table" style="width: 100%; border-collapse: collapse; margin: 0;">
@@ -365,6 +375,7 @@
         <button class="btn-back" onclick="switchScreen('menu-screen')" style="margin-top: 0;">ย้อนกลับ</button>
     </div>
 
+    <!-- หน้า แอดมิน -->
     <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
         <h1>⚙️ แผงควบคุมระบบ (Admin)</h1>
         
@@ -390,20 +401,26 @@
         </div>
     </div>
 
+    <!-- หน้าจบเกมและเลือกเซฟคะแนน -->
     <div id="result-screen" class="screen">
         <h1 style="color: #EF4444; font-size: 34px;">🎮 จบเกมการเล่น!</h1>
-        <h2 style="font-size: 26px;">คะแนนรอบนี้ของคุณ: <span id="final-score" style="color: var(--primary);">0</span></h2>
-        <div id="score-selection" style="display: none; background: #F8FAFC; padding: 15px; border-radius: 16px; margin-bottom: 15px; border: 2px dashed #CBD5E1; text-align: center;">
-            <p style="font-weight: 600; color: #4B5563; margin-top: 0;">คุณมีคะแนนที่เล่นครบแล้ว เลือกบันทึกคะแนนรอบที่ต้องการ:</p>
-            <button id="btn-score1" onclick="saveScore(1)" style="width: 100%; background: #3B82F6; margin: 4px 0;"></button>
-            <button id="btn-score2" onclick="saveScore(2)" style="width: 100%; background: #10B981; margin: 4px 0; display: none;"></button>
+        <h2 style="font-size: 26px; margin-bottom: 5px;">คะแนนรอบล่าสุด: <span id="final-score" style="color: var(--primary);">0</span></h2>
+        
+        <!-- กล่องเลือกเซฟคะแนนแบบ Dynamic -->
+        <div id="score-selection" style="background: #F8FAFC; padding: 20px; border-radius: 16px; margin-top: 15px; margin-bottom: 15px; border: 2px dashed #CBD5E1; text-align: center; width: 100%; max-width: 400px;">
+            <p style="font-weight: 600; color: #4B5563; margin-top: 0;">คุณมีคะแนนที่ค้างอยู่ เลือกบันทึกคะแนนรอบที่ต้องการ:</p>
+            
+            <div id="dynamic-score-buttons" style="display: flex; flex-direction: column; gap: 8px; align-items: center; max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                <!-- ปุ่มจะถูกสร้างที่นี่อัตโนมัติ -->
+            </div>
+            
         </div>
+        
         <button onclick="switchScreen('menu-screen')" id="btn-back-menu" class="btn-back" style="width: auto;">กลับเมนูหลักโดยไม่บันทึก</button>
     </div>
 </div>
 
 <script>
-    // URL และ Key สำหรับเชื่อมต่อ Supabase
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlicGhqZXZxa3p5aWhmaHVvaGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzA2MDIsImV4cCI6MjA5NzAwNjYwMn0.6dn--YOyQrz6fcaOS_pc8AcWDxtIi-FBH1kw_ieshY4';
     
@@ -420,7 +437,7 @@
     const trashes = [
         { id: 1, emoji: '🍬', key: 'z', name: 'ซองขนม' }, { id: 2, emoji: '🛍️', key: 'z', name: 'ถุงพลาสติก' }, { id: 3, emoji: '🥣', key: 'z', name: 'กล่องพลาสติก' },
         { id: 4, emoji: '🍶', key: 'x', name: 'ขวดน้ำ' }, { id: 5, emoji: '🥤', key: 'x', name: 'แก้วกาแฟ' },
-        { id: 6, emoji: '🍎', key: 'c', name: 'ผัก/ผลไม้' }, { id: 7, emoji: '🐟', key: 'c', name: 'ก้างปลา' }, { id: 8, emoji: '🦴', key: 'c', name: 'กระดูก' },
+        { id: 6, emoji: '🍎', key: 'c', name: 'ผัก/ผลไม้' }, { id: 7, emoji: '🐟', key: 'c', name: 'ก้างปลา' }, { id: 8, emoji: '🦴', key: 'c', name: 'กระดูกไก่' },
         { id: 9, emoji: '😷', key: 'b', name: 'หน้ากากอนามัย' }, { id: 10, emoji: '🩹', key: 'b', name: 'พลาสเตอร์ปิดแผล' },
         { id: 11, emoji: '🔋', key: 'v', name: 'ถ่านแบตเตอรี่' }, { id: 12, emoji: '💡', key: 'v', name: 'หลอดไฟ' }
     ];
@@ -481,13 +498,16 @@
             timerEl.innerText = `⏳ รีเซ็ตใน ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
         
-        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน
+        // รีเซ็ตค่าต่างๆ ตอนเที่ยงคืน (เวลาไทย)
         if(h === 0 && m === 0 && s === 0 && currentUser) {
             currentUser.energy = 2;
             currentUser.hasSavedToday = false;
             currentUser.status_updates_left = 2;
             currentUser.daily_status = '';
             
+            gameState.scoreHistory = [];
+            localStorage.removeItem('scoreHistory_' + currentUser.username);
+
             if(currentUser.role !== 'admin') {
                 supabaseClient.from('users').update({ energy: 2, status_updates_left: 2, daily_status: '' }).eq('username', currentUser.username);
             }
@@ -511,6 +531,15 @@
 
         if (u === 'admin' && p === 'adminhse') {
             currentUser = { display_name: 'Admin HSE', username: 'admin', energy: 999, role: 'admin', hasSavedToday: false, status_updates_left: 2, daily_status: '' };
+            
+            let savedHistory = localStorage.getItem('scoreHistory_admin');
+            if (savedHistory) {
+                try { gameState.scoreHistory = JSON.parse(savedHistory); } 
+                catch(e) { gameState.scoreHistory = []; }
+            } else {
+                gameState.scoreHistory = [];
+            }
+
             updateMenuUI();
             switchScreen('menu-screen');
             return;
@@ -525,9 +554,16 @@
             const today = getTodayBKK();
             currentUser.hasSavedToday = (currentUser.last_saved_date === today);
 
-            // เซ็ตค่าเริ่มต้นถ้าฐานข้อมูลเป็น null
             if(currentUser.status_updates_left === null || currentUser.status_updates_left === undefined) currentUser.status_updates_left = 2;
             if(!currentUser.daily_status) currentUser.daily_status = '';
+
+            let savedHistory = localStorage.getItem('scoreHistory_' + currentUser.username);
+            if (savedHistory) {
+                try { gameState.scoreHistory = JSON.parse(savedHistory); } 
+                catch(e) { gameState.scoreHistory = []; }
+            } else {
+                gameState.scoreHistory = [];
+            }
 
             updateMenuUI();
             switchScreen('menu-screen');
@@ -576,7 +612,6 @@
         }
     }
 
-    // --- ส่วนแก้ไขชื่อเล่นและอัปเดตสถานะ (ฟีเจอร์ใหม่) ---
     async function editDisplayName() {
         let newName = prompt("ตั้งชื่อที่แสดงในกระดานคะแนนใหม่:", currentUser.display_name);
         if(newName && newName.trim() !== "") {
@@ -632,11 +667,17 @@
         document.getElementById('player-energy').innerText = currentUser.role === 'admin' ? '∞' : currentUser.energy;
         document.getElementById('admin-btn').style.display = currentUser.role === 'admin' ? 'block' : 'none';
         
-        // อัปเดตช่องสถานะ
         document.getElementById('status-input').value = currentUser.daily_status || '';
         document.getElementById('status-left').innerText = currentUser.status_updates_left;
+
+        // เช็คคะแนนค้าง ถ้ามีและยังไม่เคยเซฟวันนี้ ให้โชว์ปุ่ม "บันทึกคะแนนที่ค้างอยู่"
+        let resumeBtn = document.getElementById('btn-resume-save');
+        if (gameState.scoreHistory && gameState.scoreHistory.length > 0 && !currentUser.hasSavedToday) {
+            resumeBtn.style.display = 'block';
+        } else {
+            resumeBtn.style.display = 'none';
+        }
     }
-    // ------------------------------------------
 
     async function showLeaderboard() {
         switchScreen('scoreboard-screen');
@@ -644,7 +685,6 @@
         tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; border-bottom: 1px solid #E2E8F0; padding: 10px 12px;">กำลังโหลดข้อมูล...</td></tr>';
 
         try {
-            // ดึงคะแนนและสถานะประจำวันของแต่ละคนมาแสดง
             const { data, error } = await supabaseClient.from('scores').select('score, username, users(display_name, daily_status)');
 
             if (error || !data || data.length === 0) {
@@ -664,7 +704,6 @@
                 aggregatedScores[row.username].totalScore += row.score;
             });
 
-            // ดึง 100 อันดับแรก
             let sortedScores = Object.values(aggregatedScores).sort((a, b) => b.totalScore - a.totalScore).slice(0, 100);
 
             tbody.innerHTML = sortedScores.map((player, index) => `
@@ -683,7 +722,6 @@
         }
     }
 
-    // --- ส่วนหน้าควบคุมแอดมิน ---
     function showAdminPanel() {
         switchScreen('admin-screen');
         loadAdminData();
@@ -768,8 +806,6 @@
         await supabaseClient.from('scores').delete().gt('score', -1);
         alert('ล้างข้อมูลกระดานคะแนนเรียบร้อยแล้ว!');
     }
-    // --- สิ้นสุดส่วนหน้าควบคุมแอดมิน ---
-
 
     function showStartPopup() {
         if (currentUser.role !== 'admin' && currentUser.energy <= 0) return alert('พลังงานของคุณหมดแล้วสําหรับวันนี้! กรุณารอเวลาพลังงานรีเซ็ตตอนเที่ยงคืนครับ');
@@ -997,39 +1033,52 @@
         el.innerHTML = text; el.style.color = color;
     }
 
-    function gameOver() {
-        gameState.isPlaying = false;
-        document.getElementById('final-score').innerText = gameState.score;
-        gameState.scoreHistory.push(gameState.score);
+    function showResultScreen() {
+        if(gameState.scoreHistory.length > 0) {
+            document.getElementById('final-score').innerText = gameState.scoreHistory[gameState.scoreHistory.length - 1];
+        }
+        
+        const btnContainer = document.getElementById('dynamic-score-buttons');
+        btnContainer.innerHTML = '';
+        
+        gameState.scoreHistory.forEach((score, index) => {
+            const btn = document.createElement('button');
+            btn.style.width = '100%';
+            btn.style.margin = '4px 0';
+            btn.style.background = index % 2 === 0 ? '#3B82F6' : '#10B981';
+            btn.innerText = `บันทึกคะแนนรอบที่ ${index + 1}: ${score.toLocaleString()} คะแนน`;
+            btn.onclick = () => saveScore(index + 1);
+            btnContainer.appendChild(btn);
+        });
+
+        document.getElementById('score-selection').style.display = 'block';
 
         if(gameState.scoreHistory.length >= 2) {
-            document.getElementById('score-selection').style.display = 'block';
             document.getElementById('btn-back-menu').style.display = 'none'; 
-            
-            let btn1 = document.getElementById('btn-score1');
-            let btn2 = document.getElementById('btn-score2');
-            
-            btn1.style.display = 'inline-block';
-            btn1.innerText = `บันทึกคะแนนรอบที่ 1: ${gameState.scoreHistory[0]} คะแนน`;
-            
-            btn2.style.display = 'inline-block';
-            btn2.innerText = `บันทึกคะแนนรอบที่ 2: ${gameState.scoreHistory[1]} คะแนน`;
         } else {
-            document.getElementById('score-selection').style.display = 'block';
             document.getElementById('btn-back-menu').style.display = 'block';
-            
-            document.getElementById('btn-score1').style.display = 'inline-block';
-            document.getElementById('btn-score1').innerText = `บันทึกคะแนนรอบที่ 1: ${gameState.scoreHistory[0]} คะแนน`;
-            
-            document.getElementById('btn-score2').style.display = 'none';
         }
+        
         switchScreen('result-screen');
+    }
+
+    function gameOver() {
+        gameState.isPlaying = false;
+        gameState.scoreHistory.push(gameState.score);
+
+        if(currentUser) {
+            localStorage.setItem('scoreHistory_' + currentUser.username, JSON.stringify(gameState.scoreHistory));
+        }
+
+        showResultScreen();
+        updateMenuUI();
     }
 
     async function saveScore(roundIndex) {
         if(currentUser.role !== 'admin' && currentUser.hasSavedToday) {
             alert('คุณได้บันทึกคะแนนสะสมของวันนี้ไปแล้ว! สามารถรอบันทึกใหม่ได้หลังเวลาเที่ยงคืนครับ');
             gameState.scoreHistory = []; 
+            if(currentUser) localStorage.removeItem('scoreHistory_' + currentUser.username);
             switchScreen('menu-screen');
             return;
         }
@@ -1046,6 +1095,7 @@
             
             currentUser.hasSavedToday = true; 
             gameState.scoreHistory = []; 
+            if(currentUser) localStorage.removeItem('scoreHistory_' + currentUser.username);
             
             switchScreen('menu-screen');
         } catch(err) {
