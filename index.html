@@ -56,12 +56,14 @@
         
         .form-group { display: flex; flex-direction: column; margin-bottom: 10px; width: 300px; }
         .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #4B5563; }
-        input { 
+        input[type="text"], input[type="password"], input[type="number"] { 
             padding: 10px 14px; border-radius: 10px; border: 2px solid #E2E8F0; 
             font-family: 'Kanit'; width: 100%; box-sizing: border-box; font-size: 14px; transition: 0.2s;
         }
         input:focus { outline: none; border-color: var(--primary); }
         
+        input[type="range"] { accent-color: var(--primary); cursor: pointer; }
+
         button {
             padding: 12px 24px; font-family: 'Kanit'; font-weight: 600; font-size: 16px;
             border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s;
@@ -168,6 +170,12 @@
         .btn-admin-clear:hover { background-color: #DC2626; }
         .btn-admin-add { background-color: #3B82F6; color: white; border: none; cursor: pointer; }
         .btn-admin-add:hover { background-color: #2563EB; }
+
+        /* สไตล์สำหรับกล่องตั้งค่าเสียง */
+        .settings-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .settings-label { font-weight: 600; color: #4B5563; }
+        .settings-control { display: flex; align-items: center; gap: 10px; }
+        .settings-val { width: 25px; text-align: center; font-weight: bold; color: var(--primary); font-size: 18px; }
     </style>
 </head>
 <body>
@@ -263,9 +271,50 @@
             <button id="btn-resume-save" onclick="showResultScreen()" style="display:none; background: #F59E0B; font-size: 16px; padding: 10px 40px; width: 250px; border-radius: 12px; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);">💾 บันทึกคะแนนที่ค้างอยู่</button>
             <button onclick="playClickSound(); switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
             <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
-            <button id="admin-btn" style="display:none; background: #8B5CF6; width: 250px;" onclick="showAdminPanel()">⚙️ แผงควบคุมแอดมิน</button>
+            <button onclick="playClickSound(); switchScreen('settings-screen')" style="background: #8B5CF6; width: 250px;">⚙️ ตั้งค่าระดับเสียง</button>
+            <button id="admin-btn" style="display:none; background: #4B5563; width: 250px;" onclick="showAdminPanel()">🛠️ แผงควบคุมแอดมิน</button>
             <button onclick="logout()" class="btn-back" style="width: 250px; margin-top: 10px;">ออกจากระบบ</button>
         </div>
+    </div>
+
+    <div id="settings-screen" class="screen">
+        <h1 style="margin-bottom: 20px; font-size: 32px;">⚙️ ตั้งค่าระดับเสียง</h1>
+        <div style="background: #F8FAFC; padding: 25px; border-radius: 20px; border: 2px dashed #CBD5E1; width: 100%; max-width: 450px;">
+            
+            <div class="settings-row">
+                <label class="settings-label">🎵 เพลงพื้นหลัง (BGM)</label>
+                <div class="settings-control">
+                    <input type="range" min="1" max="5" value="5" id="vol-bgm" oninput="updateVolText('bgm', this.value)" onchange="testVolSound('bgm')">
+                    <span id="val-bgm" class="settings-val">5</span>
+                </div>
+            </div>
+
+            <div class="settings-row">
+                <label class="settings-label">✅ เสียงตอบถูก</label>
+                <div class="settings-control">
+                    <input type="range" min="1" max="5" value="5" id="vol-correct" oninput="updateVolText('correct', this.value)" onchange="testVolSound('correct')">
+                    <span id="val-correct" class="settings-val">5</span>
+                </div>
+            </div>
+
+            <div class="settings-row">
+                <label class="settings-label">❌ เสียงพลาด/ตอบผิด</label>
+                <div class="settings-control">
+                    <input type="range" min="1" max="5" value="5" id="vol-badmiss" oninput="updateVolText('badMiss', this.value)" onchange="testVolSound('badMiss')">
+                    <span id="val-badmiss" class="settings-val">5</span>
+                </div>
+            </div>
+
+            <div class="settings-row">
+                <label class="settings-label">⌨️ เสียงกดปุ่ม</label>
+                <div class="settings-control">
+                    <input type="range" min="1" max="5" value="5" id="vol-click" oninput="updateVolText('click', this.value)" onchange="testVolSound('click')">
+                    <span id="val-click" class="settings-val">5</span>
+                </div>
+            </div>
+
+        </div>
+        <button class="btn-back" onclick="playClickSound(); switchScreen('menu-screen')" style="width: 250px; margin-top: 25px;">ย้อนกลับ</button>
     </div>
 
     <div id="howto-screen" class="screen">
@@ -364,7 +413,7 @@
     </div>
 
     <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 25px;">
-        <h1>⚙️ แผงควบคุมระบบ (Admin)</h1>
+        <h1>🛠️ แผงควบคุมระบบ (Admin)</h1>
         
         <div class="admin-table-container">
             <table class="admin-table">
@@ -402,11 +451,28 @@
 </div>
 
 <script>
-    // --- ตั้งค่าระบบเสียง ---
-    // อ้างอิงชื่อไฟล์เสียงให้ตรงกับในรูปบน GitHub เป๊ะๆ
+    // --- ตั้งค่าระบบระดับเสียง (Volume Settings) ---
+    let soundVolumes = { bgm: 5, correct: 5, badMiss: 5, click: 5 };
+
+    // ดึงค่าเสียงจาก LocalStorage (ถ้าเคยปรับไว้)
+    let savedVols = localStorage.getItem('sorting_rhythm_volumes');
+    if(savedVols) {
+        try { 
+            soundVolumes = JSON.parse(savedVols); 
+            // อัปเดต UI ให้ตรงกับที่โหลดมา
+            document.getElementById('vol-bgm').value = soundVolumes.bgm;
+            document.getElementById('val-bgm').innerText = soundVolumes.bgm;
+            document.getElementById('vol-correct').value = soundVolumes.correct;
+            document.getElementById('val-correct').innerText = soundVolumes.correct;
+            document.getElementById('vol-badmiss').value = soundVolumes.badMiss;
+            document.getElementById('val-badmiss').innerText = soundVolumes.badMiss;
+            document.getElementById('vol-click').value = soundVolumes.click;
+            document.getElementById('val-click').innerText = soundVolumes.click;
+        } catch(e) {}
+    }
+
     const bgm = new Audio('bgm.mp3.mp3');
     bgm.loop = true;
-    bgm.volume = 0.4;
     
     const sfxClicks = [
         new Audio('click1.mp3.MP3'),
@@ -416,6 +482,17 @@
     const sfxCorrect = new Audio('correct.mp3.MP3');
     const sfxBad = new Audio('bad.mp3.MP3');
     const sfxWrong = new Audio('wrong.mp3.MP3');
+
+    // ฟังก์ชันคำนวณและประยุกต์ใช้ระดับเสียง (5 คือ 100% ต้นฉบับ)
+    function applyVolumes() {
+        bgm.volume = (soundVolumes.bgm / 5) * 0.4;  // เสียง bgm ปกติให้เบาหน่อย (0.4) จะได้ไม่กลบ sfx
+        sfxCorrect.volume = (soundVolumes.correct / 5) * 1.0;
+        sfxBad.volume = (soundVolumes.badMiss / 5) * 1.0;
+        sfxWrong.volume = (soundVolumes.badMiss / 5) * 1.0;
+        sfxClicks.forEach(c => c.volume = (soundVolumes.click / 5) * 1.0);
+        
+        localStorage.setItem('sorting_rhythm_volumes', JSON.stringify(soundVolumes));
+    }
     
     let isMuted = true;
 
@@ -427,10 +504,26 @@
             muteBtn.innerText = '🔇 ปิดเสียง';
             muteBtn.style.background = '#EF4444';
         } else {
+            applyVolumes(); // อัปเดต volume ก่อนเล่น
             bgm.play().catch(e => console.log("รอ User Interact ก่อนเล่นเพลง", e));
             muteBtn.innerText = '🔊 เปิดเสียง';
             muteBtn.style.background = '#10B981';
         }
+    }
+
+    function updateVolText(type, val) {
+        document.getElementById('val-' + (type === 'badMiss' ? 'badmiss' : type)).innerText = val;
+        soundVolumes[type] = parseInt(val);
+        applyVolumes();
+    }
+
+    function testVolSound(type) {
+        // ถ้าผู้เล่นกดเลื่อนแถบเสียง แปลว่าอยากฟัง ให้บังคับเปิดเสียง(Unmute)อัตโนมัติ
+        if(isMuted) toggleMute();
+
+        if (type === 'click') playClickSound();
+        if (type === 'correct') playCorrectSound();
+        if (type === 'badMiss') playBadSound();
     }
 
     function playClickSound() {
@@ -461,6 +554,9 @@
             sfxWrong.play().catch(e => {});
         }
     }
+
+    // เซ็ตเสียงตั้งต้นตอนโหลดสคริปต์
+    applyVolumes();
     // ----------------------
 
     const SUPABASE_URL = 'https://ybphjevqkzyihfhuohln.supabase.co';
@@ -543,18 +639,31 @@
         }
         
         if(h === 0 && m === 0 && s === 0 && currentUser) {
-            currentUser.energy = 2;
-            currentUser.hasSavedToday = false;
-            currentUser.status_updates_left = 2;
-            currentUser.daily_status = '';
-            
-            gameState.scoreHistory = [];
-            localStorage.removeItem('scoreHistory_' + currentUser.username);
-
-            if(currentUser.role !== 'admin') {
-                supabaseClient.from('users').update({ energy: 2, status_updates_left: 2, daily_status: '' }).eq('username', currentUser.username);
+            let shouldReset = false;
+            if (currentUser.last_reset_date !== getTodayBKK()) {
+                shouldReset = true;
             }
-            if(document.getElementById('menu-screen').classList.contains('active')) updateMenuUI();
+
+            if (shouldReset) {
+                currentUser.energy = 2;
+                currentUser.hasSavedToday = false;
+                currentUser.status_updates_left = 2;
+                currentUser.daily_status = '';
+                currentUser.last_reset_date = getTodayBKK();
+                
+                gameState.scoreHistory = [];
+                localStorage.removeItem('scoreHistory_' + currentUser.username);
+
+                if(currentUser.role !== 'admin') {
+                    supabaseClient.from('users').update({ 
+                        energy: 2, 
+                        status_updates_left: 2, 
+                        daily_status: '',
+                        last_reset_date: currentUser.last_reset_date 
+                    }).eq('username', currentUser.username);
+                }
+                if(document.getElementById('menu-screen').classList.contains('active')) updateMenuUI();
+            }
         }
     }
     setInterval(updateMidnightTimer, 1000);
@@ -574,7 +683,7 @@
         if (!u || !p) return alert('กรุณากรอก Username และ Password');
 
         if (u === 'admin' && p === 'adminhse') {
-            currentUser = { display_name: 'Admin HSE', username: 'admin', energy: 999, role: 'admin', hasSavedToday: false, status_updates_left: 2, daily_status: '' };
+            currentUser = { display_name: 'Admin HSE', username: 'admin', energy: 999, role: 'admin', hasSavedToday: false, status_updates_left: 2, daily_status: '', last_reset_date: getTodayBKK() };
             
             let savedHistory = localStorage.getItem('scoreHistory_admin');
             if (savedHistory) {
@@ -602,6 +711,20 @@
 
             if(currentUser.status_updates_left === null || currentUser.status_updates_left === undefined) currentUser.status_updates_left = 2;
             if(!currentUser.daily_status) currentUser.daily_status = '';
+
+            if (currentUser.role !== 'admin' && currentUser.last_reset_date !== today) {
+                currentUser.energy = 2;
+                currentUser.status_updates_left = 2;
+                currentUser.daily_status = '';
+                currentUser.last_reset_date = today;
+
+                await supabaseClient.from('users').update({
+                    energy: 2,
+                    status_updates_left: 2,
+                    daily_status: '',
+                    last_reset_date: today
+                }).eq('username', currentUser.username);
+            }
 
             let savedHistory = localStorage.getItem('scoreHistory_' + currentUser.username);
             if (savedHistory) {
@@ -641,8 +764,9 @@
         if (pass !== confirm) return alert('รหัสผ่านและช่องยืนยันรหัสผ่านไม่ตรงกัน');
 
         try {
+            const today = getTodayBKK();
             const { data, error } = await supabaseClient.from('users').insert([
-                { display_name: display, full_name: fullname, department: dept, username: user, password: pass }
+                { display_name: display, full_name: fullname, department: dept, username: user, password: pass, last_reset_date: today }
             ]);
 
             if (error) {
@@ -1001,7 +1125,7 @@
         let key = e.key.toLowerCase();
         if (['z','x','c','v','b'].includes(key)) {
             if(gameState.playerInput.length < gameState.sequence.length) {
-                playClickSound(); // สุ่มเล่นเสียง Click 1 ใน 3
+                playClickSound(); 
                 gameState.playerInput.push(key);
                 renderInputs(gameState.playerInput);
             }
@@ -1058,7 +1182,7 @@
             } else if (errors >= 3) {
                 finalScore = baseScore * 0.3;
                 status = `Bad! (ผิด ${errors})`; color = '#F59E0B';
-                playBadSound(); // เสียง Bad
+                playBadSound();
             }
         } else {
             if (errors > 0) {
@@ -1069,7 +1193,7 @@
                 } else if (errors >= 3) {
                     finalScore = baseScore * 0.3; 
                     status = `Bad! (ผิด ${errors})`; color = '#F59E0B';
-                    playBadSound(); // เสียง Bad
+                    playBadSound();
                 }
             } else {
                 if (pctTimeUsed <= 0.60) {
@@ -1089,7 +1213,7 @@
                 } else {
                     finalScore = baseScore * 0.3; 
                     status = 'Bad!'; color = '#F59E0B'; gameState.perfectCombo = 0;
-                    playBadSound(); // เสียง Bad
+                    playBadSound();
                 }
             }
         }
@@ -1108,7 +1232,7 @@
         let loss = gameState.sequence.length;
         gameState.hearts -= loss;
         showStatus('Miss! (เสีย ' + loss + ' หัวใจ)', '#EF4444');
-        playWrongSound(); // เสียง Miss
+        playWrongSound();
         updateGameUI();
         setTimeout(nextRound, 1500);
     }
