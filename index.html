@@ -85,9 +85,10 @@
         }
 
         .trash-display { display: flex; gap: 15px; min-height: 100px; margin-bottom: 20px; justify-content: center; align-items: flex-end; }
-        .trash-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; }
+        /* กำหนดความกว้าง trash-item ให้ตรงกับ input */
+        .trash-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; width: 85px; }
         .trash-item .emoji { font-size: 55px; line-height: 1; }
-        .trash-item .name { font-size: 13px; color: #4B5563; font-weight: 600; text-align: center; line-height: 1.1; max-width: 80px; word-break: break-word; }
+        .trash-item .name { font-size: 13px; color: #4B5563; font-weight: 600; text-align: center; line-height: 1.1; max-width: 85px; word-break: break-word; }
         
         .input-display { font-size: 45px; display: flex; gap: 15px; min-height: 70px; color: #9CA3AF; justify-content: center; align-items: center; }
         
@@ -100,8 +101,9 @@
         .key-z { background: var(--blue); } 
         .key-x { background: var(--yellow); color: #1F2937; }
         .key-c { background: var(--green); } 
-        .key-v { background: var(--red); }
-        .key-b { background: var(--orange); }
+        .key-v { background: var(--orange); } /* แก้ V เป็นส้ม */
+        .key-b { background: var(--red); }    /* แก้ B เป็นแดง */
+        
         .key-row-space { width: 100%; }
         .key-space {
             width: 100%; padding: 10px 0; border-radius: 12px; font-weight: bold; color: #4B5563;
@@ -257,7 +259,6 @@
                     ⚡ พลังงาน: <span id="player-energy">2</span>/2<br>
                     <span id="energy-timer" style="color: #6B7280; font-size: 12px;">⏳ รีเซ็ตใน 00:00:00</span>
                 </div>
-                <!-- เพิ่มปุ่มฟันเฟืองสำหรับตั้งค่าเสียง ข้างๆ ปุ่มเปิด/ปิดเสียง -->
                 <button id="mute-btn" onclick="toggleMute()" style="padding: 4px 8px; font-size: 12px; width: auto; margin: 0 0 0 10px; background: #EF4444; border-radius: 8px;">🔇 ปิดเสียง</button>
                 <button onclick="playClickSound(); switchScreen('settings-screen')" style="padding: 4px 8px; font-size: 12px; width: auto; margin: 0 0 0 5px; background: #8B5CF6; border-radius: 8px;" title="ตั้งค่าระดับเสียง">⚙️</button>
             </span>
@@ -276,7 +277,6 @@
             <button id="btn-resume-save" onclick="showResultScreen()" style="display:none; background: #F59E0B; font-size: 16px; padding: 10px 40px; width: 250px; border-radius: 12px; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);">💾 บันทึกคะแนนที่ค้างอยู่</button>
             <button onclick="playClickSound(); switchScreen('howto-screen')" style="background: #3B82F6; width: 250px;">📖 วิธีการเล่นเบื้องต้น</button>
             <button onclick="showLeaderboard()" style="background: #FBBF24; color: #1F2937; width: 250px;">🏆 กระดานคะแนนสะสม</button>
-            <!-- ปุ่มตั้งค่าเสียง ในเมนูหลักด้วย -->
             <button onclick="playClickSound(); switchScreen('settings-screen')" style="background: #8B5CF6; width: 250px;">⚙️ ตั้งค่าระดับเสียง</button>
             <button id="admin-btn" style="display:none; background: #4B5563; width: 250px;" onclick="showAdminPanel()">🛠️ แผงควบคุมแอดมิน</button>
             <button onclick="logout()" class="btn-back" style="width: 250px; margin-top: 10px;">ออกจากระบบ</button>
@@ -339,8 +339,8 @@
                 <div class="key-box key-z">Z<br>ทั่วไป<br>(น้ำเงิน)</div>
                 <div class="key-box key-x">X<br>รีไซเคิล<br>(เหลือง)</div>
                 <div class="key-box key-c">C<br>เปียก<br>(เขียว)</div>
-                <div class="key-box key-v">V<br>อันตราย<br>(แดง)</div>
-                <div class="key-box key-b">B<br>ติดเชื้อ<br>(ส้ม)</div>
+                <div class="key-box key-v">V<br>อันตราย<br>(ส้ม)</div>
+                <div class="key-box key-b">B<br>ติดเชื้อ<br>(แดง)</div>
             </div>
             <div class="key-row-space">
                 <div class="key-space">SPACEBAR - ยืนยันคำตอบ</div>
@@ -350,8 +350,8 @@
         <h2 style="font-size: 16px;">🗑️ ประเภทขยะที่จะสุ่มขึ้นในเกม</h2>
         <div class="trash-guide-grid">
             <div class="guide-card"><span class="emoji">🍬</span><div class="info"><span class="title">ซองขนม</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
-            <div class="guide-card"><span class="emoji">🛍️</span><div class="info"><span class="title">ถุงพลาสติก</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
-            <div class="guide-card"><span class="emoji">🥣</span><div class="info"><span class="title">กล่องพลาสติก</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
+            <div class="guide-card"><span class="emoji">🛍️</span><div class="info"><span class="title">ถุงแกง/ถุงใส่กับข้าว</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
+            <div class="guide-card"><span class="emoji">🧃</span><div class="info"><span class="title">กล่องน้ำผลไม้</span><span style="color:var(--blue)">Z - ขยะทั่วไป</span></div></div>
             
             <div class="guide-card"><span class="emoji">🍶</span><div class="info"><span class="title">ขวดน้ำ</span><span style="color:#D97706">X - ขยะรีไซเคิล</span></div></div>
             <div class="guide-card"><span class="emoji">🥤</span><div class="info"><span class="title">แก้วกาแฟ</span><span style="color:#D97706">X - ขยะรีไซเคิล</span></div></div>
@@ -359,11 +359,11 @@
             
             <div class="guide-card"><span class="emoji">🐟</span><div class="info"><span class="title">ก้างปลา</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
             <div class="guide-card"><span class="emoji">🦴</span><div class="info"><span class="title">กระดูกไก่</span><span style="color:var(--green)">C - ขยะเปียก</span></div></div>
-            <div class="guide-card"><span class="emoji">😷</span><div class="info"><span class="title">หน้ากากอนามัย</span><span style="color:#EA580C">B - ขยะติดเชื้อ</span></div></div>
+            <div class="guide-card"><span class="emoji">😷</span><div class="info"><span class="title">หน้ากากอนามัย</span><span style="color:var(--red)">B - ขยะติดเชื้อ</span></div></div>
             
-            <div class="guide-card"><span class="emoji">🩹</span><div class="info"><span class="title">พลาสเตอร์</span><span style="color:#EA580C">B - ขยะติดเชื้อ</span></div></div>
-            <div class="guide-card"><span class="emoji">🔋</span><div class="info"><span class="title">ถ่านแบตเตอรี่</span><span style="color:var(--red)">V - ขยะอันตราย</span></div></div>
-            <div class="guide-card"><span class="emoji">💡</span><div class="info"><span class="title">หลอดไฟ</span><span style="color:var(--red)">V - ขยะอันตราย</span></div></div>
+            <div class="guide-card"><span class="emoji">🩹</span><div class="info"><span class="title">พลาสเตอร์</span><span style="color:var(--red)">B - ขยะติดเชื้อ</span></div></div>
+            <div class="guide-card"><span class="emoji">🔋</span><div class="info"><span class="title">ถ่านแบตเตอรี่</span><span style="color:var(--orange)">V - ขยะอันตราย</span></div></div>
+            <div class="guide-card"><span class="emoji">💡</span><div class="info"><span class="title">หลอดไฟ</span><span style="color:var(--orange)">V - ขยะอันตราย</span></div></div>
         </div>
         
         <button class="btn-back" onclick="playClickSound(); switchScreen('menu-screen')" style="width: 250px; margin-top: 10px;">ย้อนกลับ</button>
@@ -463,7 +463,7 @@
 </div>
 
 <script>
-    // --- ตั้งค่าระบบเสียง ---
+    // --- ตั้งค่าระบบระดับเสียง (Volume Settings) ---
     let soundVolumes = { bgm: 5, correct: 5, badMiss: 5, click: 5 };
 
     // ดึงค่าเสียงจาก LocalStorage (ถ้าเคยปรับไว้)
@@ -495,7 +495,6 @@
     const sfxBad = new Audio('bad.mp3.MP3');
     const sfxWrong = new Audio('wrong.mp3.MP3');
 
-    // ฟังก์ชันคำนวณและประยุกต์ใช้ระดับเสียง (5 คือ 100% ต้นฉบับ)
     function applyVolumes() {
         bgm.volume = (soundVolumes.bgm / 5) * 0.4;  
         sfxCorrect.volume = (soundVolumes.correct / 5) * 1.0;
@@ -516,7 +515,7 @@
             muteBtn.innerText = '🔇 ปิดเสียง';
             muteBtn.style.background = '#EF4444';
         } else {
-            applyVolumes(); // อัปเดต volume ก่อนเล่น
+            applyVolumes();
             bgm.play().catch(e => console.log("รอ User Interact ก่อนเล่นเพลง", e));
             muteBtn.innerText = '🔊 เปิดเสียง';
             muteBtn.style.background = '#10B981';
@@ -567,7 +566,6 @@
         }
     }
 
-    // เซ็ตเสียงตั้งต้นตอนโหลดสคริปต์
     applyVolumes();
     // ----------------------
 
@@ -585,7 +583,7 @@
     }
 
     const trashes = [
-        { id: 1, emoji: '🍬', key: 'z', name: 'ซองขนม' }, { id: 2, emoji: '🛍️', key: 'z', name: 'ถุงพลาสติก' }, { id: 3, emoji: '🥣', key: 'z', name: 'กล่องพลาสติก' },
+        { id: 1, emoji: '🍬', key: 'z', name: 'ซองขนม' }, { id: 2, emoji: '🛍️', key: 'z', name: 'ถุงแกง/ถุงใส่กับข้าว' }, { id: 3, emoji: '🧃', key: 'z', name: 'กล่องน้ำผลไม้' },
         { id: 4, emoji: '🍶', key: 'x', name: 'ขวดน้ำ' }, { id: 5, emoji: '🥤', key: 'x', name: 'แก้วกาแฟ' },
         { id: 6, emoji: '🍎', key: 'c', name: 'ผัก/ผลไม้' }, { id: 7, emoji: '🐟', key: 'c', name: 'ก้างปลา' }, { id: 8, emoji: '🦴', key: 'c', name: 'กระดูกไก่' },
         { id: 9, emoji: '😷', key: 'b', name: 'หน้ากากอนามัย' }, { id: 10, emoji: '🩹', key: 'b', name: 'พลาสเตอร์ปิดแผล' },
@@ -1259,8 +1257,17 @@
     }
     
     function renderInputs(inputs) {
-        const colorMap = { 'z': '🔵', 'x': '🟡', 'c': '🟢', 'v': '🔴', 'b': '🟠' };
-        document.getElementById('input-container').innerHTML = inputs.map(i => `<div>${colorMap[i]}</div>`).join('');
+        const colorMap = { 'z': '🔵', 'x': '🟡', 'c': '🟢', 'v': '🟠', 'b': '🔴' };
+        let html = '';
+        let seqLen = gameState.sequence ? gameState.sequence.length : 0;
+        for(let i=0; i<seqLen; i++) {
+            if(inputs[i]) {
+                html += `<div style="width: 85px; text-align: center;">${colorMap[inputs[i]]}</div>`;
+            } else {
+                html += `<div style="width: 85px; text-align: center; opacity: 0.15;">⚪</div>`;
+            }
+        }
+        document.getElementById('input-container').innerHTML = html;
     }
 
     function updateGameUI() {
